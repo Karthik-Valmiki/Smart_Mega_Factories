@@ -1,0 +1,777 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+  <title>Analytics & Operational Telemetry | Textile Dyeing Intelligence</title>
+
+  <!-- Typography: Google Sans (UI) & Roboto Mono (Digits/Telemetry) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;600;700&family=Google+Sans+Text:wght@400;500;600;700&family=Roboto+Mono:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Plus+Jakarta+Sans:wght@400;500;600&display=swap"
+    rel="stylesheet">
+
+  <!-- Material Symbols Outlined -->
+  <link
+    href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200"
+    rel="stylesheet">
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Google Sans"', '"Google Sans Text"', '"Product Sans"', '"Plus Jakarta Sans"', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'sans-serif'],
+            mono: ['"Roboto Mono"', '"Google Sans Code"', 'monospace'],
+            digits: ['"Roboto Mono"', '"Google Sans Text"', 'monospace'],
+          },
+          colors: {
+            accent: '#0969da',
+            'accent-hover': '#0757b3',
+          }
+        }
+      }
+    };
+  </script>
+
+  <!-- Shared Global Styling -->
+  <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body class="bg-[#fafafa] font-sans text-[13px] text-zinc-900 antialiased">
+
+  <!-- Top Navigation Bar (56px) -->
+  <header
+    class="fixed top-0 left-0 right-0 h-14 bg-white z-50 border-b border-zinc-200 flex items-center justify-between px-5">
+    <div class="flex items-center gap-3 min-w-[260px]">
+      <div class="flex items-center gap-2">
+        <span class="material-symbols-outlined text-zinc-700 text-[20px]">water_drop</span>
+        <span class="font-medium text-[15px] tracking-tight text-zinc-900">Textile Intelligence</span>
+      </div>
+      <span class="keycap">BD-04</span>
+      <span class="text-zinc-500 text-[12px] font-normal">Dhaka Mill 04</span>
+    </div>
+
+    <!-- Search Input -->
+    <div class="flex-1 max-w-lg mx-6">
+      <div class="relative flex items-center">
+        <span class="material-symbols-outlined absolute left-3 text-zinc-400 text-[18px]">search</span>
+        <input
+          class="w-full h-8 pl-9 pr-8 rounded-md bg-zinc-50 text-zinc-900 text-[12px] placeholder:text-zinc-400 focus:outline-none focus:bg-white focus:ring-1 focus:ring-accent border border-zinc-200 transition-colors"
+          placeholder="Search batch metrics, streams, or centers..." type="text">
+        <span class="keycap absolute right-2">/</span>
+      </div>
+    </div>
+
+    <!-- Health Status Indicator & Actions -->
+    <div class="flex items-center gap-2.5">
+      <div id="systemHealthPill"
+        class="h-8 flex items-center gap-2 px-3 rounded-md bg-zinc-50 border border-zinc-200/80 transition-colors shadow-xs">
+        <span id="systemHealthDot" class="status-dot status-dot-idle"></span>
+        <span id="systemHealthText" class="text-[12px] font-medium text-zinc-600">Connecting to API...</span>
+      </div>
+      <a href="http://localhost:8000/docs" target="_blank"
+        class="h-8 px-3 rounded-md border border-zinc-200/80 bg-white hover:bg-zinc-50 text-zinc-700 hover:text-zinc-900 text-[12px] font-medium flex items-center gap-1.5 transition-colors shadow-xs"
+        title="Interactive OpenAPI Swagger Documentation">
+        <span class="material-symbols-outlined text-[16px] text-zinc-500 leading-none">menu_book</span>
+        <span>API docs</span>
+      </a>
+      <div class="h-8 w-8 rounded-md bg-zinc-900 text-white flex items-center justify-center font-digits text-[11px] font-medium shadow-xs"
+        title="Dhaka Thread Mill #04 Operator Console">
+        TD
+      </div>
+    </div>
+  </header>
+
+  <!-- Left Sidebar Navigation (256px) -->
+  <aside
+    class="fixed left-0 top-14 bottom-0 w-64 bg-white border-r border-zinc-200 z-40 flex flex-col justify-between">
+    <div class="flex flex-col py-4 px-3 overflow-y-auto">
+      <div class="px-2 pb-2 text-[11px] font-medium text-zinc-400">
+        Operational console
+      </div>
+      <nav class="flex flex-col gap-1">
+        <!-- 1. Telemetry (ACTIVE) -->
+        <a href="dashboard.html" class="nav-item active">
+          <span class="material-symbols-outlined">analytics</span>
+          <span>Analytics & telemetry</span>
+        </a>
+        <!-- 2. ML Prediction -->
+        <a href="prediction.html" class="nav-item">
+          <span class="material-symbols-outlined">psychology</span>
+          <span>ML waste simulator</span>
+        </a>
+        <!-- 3. MILP Reverse Logistics -->
+        <a href="optimizer.html" class="nav-item">
+          <span class="material-symbols-outlined">local_shipping</span>
+          <span>Reverse logistics (MILP)</span>
+        </a>
+        <!-- 4. Model Governance -->
+        <a href="governance.html" class="nav-item">
+          <span class="material-symbols-outlined">verified_user</span>
+          <span>Model governance</span>
+        </a>
+      </nav>
+
+      <div class="my-4 mx-2 h-[1px] bg-zinc-100"></div>
+
+      <div class="px-2 pb-2 text-[11px] font-medium text-zinc-400">
+        API endpoints
+      </div>
+      <nav class="flex flex-col gap-1 text-[12px]">
+        <a href="http://localhost:8000/docs" target="_blank"
+          class="flex items-center justify-between px-2.5 py-1.5 rounded-md text-zinc-600 hover:bg-zinc-50 hover:text-zinc-900 transition-colors">
+          <span class="flex items-center gap-2">
+            <span class="material-symbols-outlined text-[16px] text-zinc-400">menu_book</span>
+            <span>Swagger UI (/docs)</span>
+          </span>
+          <span class="material-symbols-outlined text-[14px] text-zinc-400">open_in_new</span>
+        </a>
+        <a href="http://localhost:8000/redoc" target="_blank"
+          class="flex items-center justify-between px-2.5 py-1.5 rounded-md text-zinc-600 hover:bg-zinc-50 hover:text-zinc-900 transition-colors">
+          <span class="flex items-center gap-2">
+            <span class="material-symbols-outlined text-[16px] text-zinc-400">description</span>
+            <span>ReDoc (/redoc)</span>
+          </span>
+          <span class="material-symbols-outlined text-[14px] text-zinc-400">open_in_new</span>
+        </a>
+      </nav>
+    </div>
+
+    <!-- Cluster Footer -->
+    <div class="p-3.5 border-t border-zinc-200 bg-zinc-50/50">
+      <div class="flex items-center justify-between font-mono text-[11px] text-zinc-600">
+        <span class="flex items-center gap-2">
+          <span class="status-dot status-dot-live"></span>
+          <span>Dataset: 731 days</span>
+        </span>
+        <span class="text-zinc-400">v1.0.0</span>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Main Content Body -->
+  <div class="pl-64">
+    <main class="w-full min-h-screen pt-14 pb-16 px-8 bg-[#fafafa]">
+
+      <!-- Page Header & Action Controls -->
+      <div class="flex flex-col md:flex-row md:items-center justify-between gap-3 pt-6 pb-5 border-b border-zinc-200">
+        <div>
+          <!-- Breadcrumb -->
+          <div class="flex items-center gap-1.5 text-zinc-400 text-[12px] font-normal mb-1">
+            <span>Console</span>
+            <span class="text-zinc-300">/</span>
+            <span>Telemetry</span>
+            <span class="text-zinc-300">/</span>
+            <span class="text-zinc-700 font-medium">Overview</span>
+          </div>
+          <div class="flex items-center gap-3">
+            <h1 class="text-[20px] font-medium text-zinc-900 tracking-tight">
+              Analytics & operational telemetry
+            </h1>
+            <span class="keycap">731 daily records (2023–2024)</span>
+          </div>
+        </div>
+
+        <!-- Year Toggle & Refresh -->
+        <div class="flex items-center gap-2">
+          <div class="inline-flex rounded-md border border-zinc-200 bg-white p-0.5 shadow-xs">
+            <button id="yearBtn2024" onclick="switchYear(2024)"
+              class="px-3 py-1 rounded text-[12px] font-medium bg-zinc-900 text-white transition-colors">
+              2024 holdout
+            </button>
+            <button id="yearBtn2023" onclick="switchYear(2023)"
+              class="px-3 py-1 rounded text-[12px] font-medium text-zinc-600 hover:text-zinc-900 transition-colors">
+              2023 baseline
+            </button>
+          </div>
+          <button onclick="loadAllTelemetryData()"
+            class="h-8 w-8 inline-flex items-center justify-center rounded-md border border-zinc-200 bg-white hover:bg-zinc-50 text-zinc-600 shadow-xs transition-colors"
+            title="Reload live telemetry data">
+            <span class="material-symbols-outlined text-[18px]">refresh</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Row 1: Executive KPI Cards (4 columns) -->
+      <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4 my-6">
+
+        <!-- Card 1: Production Volume -->
+        <div class="industrial-card p-5 flex flex-col justify-between">
+          <div>
+            <div class="flex items-center justify-between mb-2">
+              <span class="text-zinc-500 text-[12px] font-normal">Total production</span>
+              <span class="material-symbols-outlined text-zinc-400 text-[18px]">precision_manufacturing</span>
+            </div>
+            <div class="flex items-baseline gap-1.5">
+              <span id="kpiProductionTons" class="font-telemetry-display">5,612.4</span>
+              <span class="font-digits text-[12px] text-zinc-500 font-normal">tons</span>
+            </div>
+            <p id="kpiProductionKg" class="font-digits text-[11px] text-zinc-500 mt-1">5,612,400 kg · 366 days</p>
+          </div>
+          <div class="mt-4 pt-3 border-t border-zinc-100 flex items-center justify-between text-[11px]">
+            <span id="kpiMachineUtil" class="badge-neutral font-digits">84.65% util</span>
+            <span id="kpiAvgFixation" class="badge-success font-digits">74.82% fixation</span>
+          </div>
+        </div>
+
+        <!-- Card 2: Solid Waste Generated -->
+        <div class="industrial-card p-5 flex flex-col justify-between">
+          <div>
+            <div class="flex items-center justify-between mb-2">
+              <span class="text-zinc-500 text-[12px] font-normal">Solid fabric waste</span>
+              <span class="material-symbols-outlined text-zinc-400 text-[18px]">delete_sweep</span>
+            </div>
+            <div class="flex items-baseline gap-1.5">
+              <span id="kpiSolidWasteKg" class="font-telemetry-display">589,410</span>
+              <span class="font-digits text-[12px] text-zinc-500 font-normal">kg</span>
+            </div>
+            <p id="kpiSolidWastePct" class="font-digits text-[11px] text-zinc-500 mt-1">10.50% total mass fraction</p>
+          </div>
+          <div class="mt-4 pt-3 border-t border-zinc-100 flex items-center justify-between text-[11px]">
+            <span class="badge-success font-digits">&le; 11.0% target</span>
+            <span class="text-zinc-500 font-digits">Yarn: <strong id="kpiYarnWasteKg" class="text-zinc-800 font-medium">231,141 kg</strong></span>
+          </div>
+        </div>
+
+        <!-- Card 3: Chemical Sludge Yield -->
+        <div class="industrial-card p-5 flex flex-col justify-between">
+          <div>
+            <div class="flex items-center justify-between mb-2">
+              <span class="text-zinc-500 text-[12px] font-normal">Chemical sludge yield</span>
+              <span class="material-symbols-outlined text-zinc-400 text-[18px]">science</span>
+            </div>
+            <div class="flex items-baseline gap-1.5">
+              <span id="kpiChemicalWasteKg" class="font-telemetry-display">1,098,230</span>
+              <span class="font-digits text-[12px] text-zinc-500 font-normal">kg</span>
+            </div>
+            <p id="kpiChemicalWastePerTon" class="font-digits text-[11px] text-zinc-500 mt-1">195.68 kg / ton production</p>
+          </div>
+          <div class="mt-4 pt-3 border-t border-zinc-100 flex items-center justify-between text-[11px]">
+            <span class="badge-warning font-digits">Sludge filter cake</span>
+            <span class="text-zinc-500 font-digits">Disposal fee: 5.0 BDT/kg</span>
+          </div>
+        </div>
+
+        <!-- Card 4: Liquid Effluent Discharged -->
+        <div class="industrial-card p-5 flex flex-col justify-between">
+          <div>
+            <div class="flex items-center justify-between mb-2">
+              <span class="text-zinc-500 text-[12px] font-normal">Effluent wastewater</span>
+              <span class="material-symbols-outlined text-zinc-400 text-[18px]">waves</span>
+            </div>
+            <div class="flex items-baseline gap-1.5">
+              <span id="kpiWastewaterL" class="font-telemetry-display">159.84</span>
+              <span class="font-digits text-[12px] text-zinc-500 font-normal">million litres</span>
+            </div>
+            <p id="kpiWastewaterPerKg" class="font-digits text-[11px] text-zinc-500 mt-1">28.48 L / kg fabric finished</p>
+          </div>
+          <div class="mt-4 pt-3 border-t border-zinc-100 flex items-center justify-between text-[11px]">
+            <span class="badge-info font-digits">75.0% in-factory reuse</span>
+            <span class="text-zinc-500 font-sans">Zero liquid discharge</span>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Row 2: Charts (Wastage Trendline & Shift Quality Analysis) -->
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-5 mb-6">
+
+        <!-- Widget 2A (Left 8 cols): Multi-Stream Wastage Trend -->
+        <div class="lg:col-span-8 industrial-card p-5 flex flex-col justify-between">
+          <div class="flex flex-wrap items-center justify-between gap-3 pb-3 border-b border-zinc-100">
+            <div>
+              <h2 class="text-[14px] font-medium text-zinc-900 flex items-center gap-2">
+                <span class="material-symbols-outlined text-zinc-500 text-[18px]">timeline</span>
+                Waste generation trends
+              </h2>
+              <p class="text-[12px] text-zinc-500 mt-0.5">Daily and monthly volumes across all 4 waste streams.</p>
+            </div>
+
+            <!-- Filter Controls -->
+            <div class="flex items-center gap-2 flex-wrap">
+              <!-- Stream Selector -->
+              <select id="trendStreamSelect" onchange="loadTrendChart()"
+                class="h-7 px-2.5 text-[11px] font-sans rounded-md border border-zinc-200 bg-white text-zinc-700 focus:outline-none focus:border-zinc-400">
+                <option value="all">All streams</option>
+                <option value="solid">Solid waste (kg)</option>
+                <option value="yarn">Yarn waste (kg)</option>
+                <option value="chemical">Chemical sludge (kg)</option>
+                <option value="wastewater">Wastewater (L)</option>
+              </select>
+
+              <!-- Granularity Toggle -->
+              <div class="inline-flex rounded-md border border-zinc-200 bg-zinc-50 p-0.5 text-[11px]">
+                <button id="granDailyBtn" onclick="setGranularity('daily')"
+                  class="px-2.5 py-0.5 rounded text-[11px] font-medium bg-white text-zinc-900 shadow-xs">Daily</button>
+                <button id="granMonthlyBtn" onclick="setGranularity('monthly')"
+                  class="px-2.5 py-0.5 rounded text-[11px] font-medium text-zinc-600 hover:text-zinc-900">Monthly</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Dynamic SVG Chart Canvas -->
+          <div class="relative w-full h-64 mt-4 flex flex-col justify-end" id="trendChartContainer">
+            <svg id="trendSvg" class="w-full h-full overflow-visible" viewBox="0 0 700 200" preserveAspectRatio="none">
+              <!-- Grid lines -->
+              <line x1="0" y1="40" x2="700" y2="40" stroke="#f4f4f5" stroke-width="1" stroke-dasharray="2 2" />
+              <line x1="0" y1="90" x2="700" y2="90" stroke="#f4f4f5" stroke-width="1" stroke-dasharray="2 2" />
+              <line x1="0" y1="140" x2="700" y2="140" stroke="#f4f4f5" stroke-width="1" stroke-dasharray="2 2" />
+              <line x1="0" y1="180" x2="700" y2="180" stroke="#e4e4e7" stroke-width="1" />
+
+              <!-- Gradient definition -->
+              <defs>
+                <linearGradient id="solidGrad" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stop-color="#0969da" stop-opacity="0.18" />
+                  <stop offset="100%" stop-color="#0969da" stop-opacity="0.0" />
+                </linearGradient>
+              </defs>
+              <!-- Dynamic Path injected by JS -->
+              <path id="trendAreaPath" fill="url(#solidGrad)" d="M0,180 L700,180 Z" />
+              <path id="trendLinePath" fill="none" stroke="#0969da" stroke-width="2" d="M0,180 L700,180" />
+            </svg>
+            <div id="trendAxisLabels" class="flex justify-between font-digits text-[10px] text-zinc-400 pt-2 px-1">
+              <span>Jan</span><span>Mar</span><span>May</span><span>Jul</span><span>Sep</span><span>Nov</span><span>Dec</span>
+            </div>
+          </div>
+
+          <!-- Legend Bar -->
+          <div class="flex items-center justify-between mt-3 pt-3 border-t border-zinc-100 text-[11px] text-zinc-500">
+            <div class="flex items-center gap-4">
+              <span class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-[#0969da]"></span> Solid (kg)</span>
+              <span class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-[#0d9488]"></span> Yarn (kg)</span>
+              <span class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-[#dc2626]"></span> Chemical (kg)</span>
+              <span class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-[#0284c7]"></span> Wastewater (L)</span>
+            </div>
+            <span id="trendSummaryStat" class="text-zinc-600 font-digits font-medium">Loaded 366 historical datapoints</span>
+          </div>
+        </div>
+
+        <!-- Widget 2B (Right 4 cols): Shift Quality Analysis (Good/Normal/Bad) -->
+        <div class="lg:col-span-4 industrial-card p-5 flex flex-col justify-between">
+          <div class="pb-3 border-b border-zinc-100">
+            <h2 class="text-[14px] font-medium text-zinc-900 flex items-center gap-2">
+              <span class="material-symbols-outlined text-zinc-500 text-[18px]">tune</span>
+              Shift quality analysis
+            </h2>
+            <p class="text-[12px] text-zinc-500 mt-0.5">Average waste fraction by operating day type.</p>
+          </div>
+
+          <div class="flex flex-col gap-4 my-auto py-3" id="dayTypeContainer">
+            <!-- Bad Day -->
+            <div>
+              <div class="flex justify-between items-center text-[12px] mb-1">
+                <span class="font-medium text-zinc-800 flex items-center gap-1.5">
+                  <span class="w-2 h-2 rounded-full bg-red-500"></span>
+                  Bad operational shift
+                </span>
+                <span class="font-digits font-medium text-red-600" id="badSolidPct">15.12% waste</span>
+              </div>
+              <div class="w-full h-2 bg-zinc-100 rounded overflow-hidden">
+                <div id="badSolidBar" class="h-full bg-red-500 rounded" style="width: 75%;"></div>
+              </div>
+              <div class="flex justify-between font-digits text-[10px] text-zinc-400 mt-1">
+                <span id="badUtil">74.2% machine util</span>
+                <span id="badFixation">64.5% dye fixation</span>
+              </div>
+            </div>
+
+            <!-- Normal Day -->
+            <div>
+              <div class="flex justify-between items-center text-[12px] mb-1">
+                <span class="font-medium text-zinc-800 flex items-center gap-1.5">
+                  <span class="w-2 h-2 rounded-full bg-blue-500"></span>
+                  Normal operational shift
+                </span>
+                <span class="font-digits font-medium text-zinc-800" id="normalSolidPct">10.45% waste</span>
+              </div>
+              <div class="w-full h-2 bg-zinc-100 rounded overflow-hidden">
+                <div id="normalSolidBar" class="h-full bg-blue-500 rounded" style="width: 52%;"></div>
+              </div>
+              <div class="flex justify-between font-digits text-[10px] text-zinc-400 mt-1">
+                <span id="normalUtil">84.1% machine util</span>
+                <span id="normalFixation">74.3% dye fixation</span>
+              </div>
+            </div>
+
+            <!-- Good Day -->
+            <div>
+              <div class="flex justify-between items-center text-[12px] mb-1">
+                <span class="font-medium text-zinc-800 flex items-center gap-1.5">
+                  <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+                  Good (optimal) shift
+                </span>
+                <span class="font-digits font-medium text-emerald-600" id="goodSolidPct">7.82% waste</span>
+              </div>
+              <div class="w-full h-2 bg-zinc-100 rounded overflow-hidden">
+                <div id="goodSolidBar" class="h-full bg-emerald-500 rounded" style="width: 39%;"></div>
+              </div>
+              <div class="flex justify-between font-digits text-[10px] text-zinc-400 mt-1">
+                <span id="goodUtil">91.5% machine util</span>
+                <span id="goodFixation">81.2% dye fixation</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="p-3 rounded-md bg-zinc-50 border border-zinc-200 text-[11px] text-zinc-600">
+            <span class="font-medium text-zinc-900">Operational insight:</span> Machine utilization increase from 74% to 91% cuts solid waste mass fraction nearly in half (15.1% &rarr; 7.8%).
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Row 3: Chemical Inputs Breakdown & Wastewater ETP -->
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-5 mb-6">
+
+        <!-- Widget 3A: Monthly Chemical Inputs Breakdown -->
+        <div class="industrial-card p-5">
+          <div class="flex items-center justify-between pb-3 border-b border-zinc-100">
+            <div>
+              <h2 class="text-[14px] font-medium text-zinc-900 flex items-center gap-2">
+                <span class="material-symbols-outlined text-zinc-500 text-[18px]">science</span>
+                Chemical input consumption
+              </h2>
+              <p class="text-[12px] text-zinc-500 mt-0.5">Monthly mass totals for salt, alkali, dye, acid, and auxiliaries.</p>
+            </div>
+            <span class="keycap">/dashboard/chemical-input-breakdown</span>
+          </div>
+
+          <div class="overflow-x-auto mt-3">
+            <table class="w-full text-left text-[12px] table-compact">
+              <thead class="bg-zinc-50 text-zinc-500 text-[10px]">
+                <tr>
+                  <th class="py-2 px-3">Month</th>
+                  <th class="py-2 px-2 text-right">Salt (kg)</th>
+                  <th class="py-2 px-2 text-right">Alkali (kg)</th>
+                  <th class="py-2 px-2 text-right">Dye (kg)</th>
+                  <th class="py-2 px-2 text-right">Acid (kg)</th>
+                  <th class="py-2 px-3 text-right">Sludge (kg)</th>
+                </tr>
+              </thead>
+              <tbody id="chemicalTableBody" class="divide-y divide-zinc-100 text-[11px]">
+                <tr>
+                  <td colspan="6" class="text-center py-4 text-zinc-400">Loading chemical inputs...</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Widget 3B: Wastewater Treatment & In-Factory ETP Recovery -->
+        <div class="industrial-card p-5">
+          <div class="flex items-center justify-between pb-3 border-b border-zinc-100">
+            <div>
+              <h2 class="text-[14px] font-medium text-zinc-900 flex items-center gap-2">
+                <span class="material-symbols-outlined text-zinc-500 text-[18px]">water</span>
+                Wastewater and ETP recovery
+              </h2>
+              <p class="text-[12px] text-zinc-500 mt-0.5">75% recycled on-site for dyeing; 25% drained within municipal limits.</p>
+            </div>
+            <span class="keycap">/dashboard/wastewater-etp</span>
+          </div>
+
+          <div class="grid grid-cols-3 gap-3 my-4">
+            <div class="p-3 rounded-md bg-zinc-50 border border-zinc-200">
+              <span class="text-[10px] text-zinc-500 font-sans">Recycled (75%)</span>
+              <div id="etpTotalRecycled" class="font-telemetry-display text-[20px] font-medium text-zinc-900 mt-1">119.88M</div>
+              <span class="text-[10px] text-zinc-400 font-sans">Litres reused</span>
+            </div>
+            <div class="p-3 rounded-md bg-zinc-50 border border-zinc-200">
+              <span class="text-[10px] text-zinc-500 font-sans">Drained (25%)</span>
+              <div id="etpTotalDrained" class="font-telemetry-display text-[20px] font-medium text-zinc-900 mt-1">39.96M</div>
+              <span class="text-[10px] text-zinc-400 font-sans">Litres discharged</span>
+            </div>
+            <div class="p-3 rounded-md bg-zinc-50 border border-zinc-200">
+              <span class="text-[10px] text-zinc-500 font-sans">Avg quality</span>
+              <div id="etpAvgQuality" class="font-telemetry-display text-[20px] font-medium text-zinc-900 mt-1">pH 8.4</div>
+              <span class="text-[10px] text-zinc-400 font-digits">BOD: 242 · COD: 789</span>
+            </div>
+          </div>
+
+          <div class="overflow-x-auto">
+            <table class="w-full text-left text-[12px] table-compact">
+              <thead class="bg-zinc-50 text-zinc-500 text-[10px]">
+                <tr>
+                  <th class="py-2 px-3">Month</th>
+                  <th class="py-2 px-2 text-right">Raw effluent (L)</th>
+                  <th class="py-2 px-2 text-right">Recycled (L)</th>
+                  <th class="py-2 px-2 text-right">Drained (L)</th>
+                  <th class="py-2 px-3 text-right">pH</th>
+                </tr>
+              </thead>
+              <tbody id="etpTableBody" class="divide-y divide-zinc-100 text-[11px]">
+                <tr>
+                  <td colspan="5" class="text-center py-4 text-zinc-400">Loading wastewater metrics...</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Row 4: Process Parameter Correlation Tornado Ranking -->
+      <div class="industrial-card p-5">
+        <div class="flex flex-wrap items-center justify-between gap-3 pb-3 border-b border-zinc-100">
+          <div>
+            <h2 class="text-[14px] font-medium text-zinc-900 flex items-center gap-2">
+              <span class="material-symbols-outlined text-zinc-500 text-[18px]">scatter_plot</span>
+              Process parameter correlation
+            </h2>
+            <p class="text-[12px] text-zinc-500 mt-0.5">Pearson correlation (r) between operating parameters and waste output.</p>
+          </div>
+
+          <div class="flex items-center gap-2">
+            <span class="text-[11px] text-zinc-500">Target stream:</span>
+            <select id="corrTargetSelect" onchange="loadCorrelationMatrix()"
+              class="h-7 px-2.5 text-[11px] font-digits rounded-md border border-zinc-200 bg-white text-zinc-700 focus:outline-none focus:border-zinc-400">
+              <option value="Solid_Waste_kg">Solid_Waste_kg</option>
+              <option value="Yarn_Waste_kg">Yarn_Waste_kg</option>
+              <option value="Chemical_Waste_kg">Chemical_Waste_kg</option>
+              <option value="Wastewater_L">Wastewater_L</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Correlation Bars Container -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-3 mt-4" id="correlationBarsContainer">
+          <div class="text-center py-6 text-zinc-400 col-span-2">Loading correlation matrix...</div>
+        </div>
+      </div>
+
+    </main>
+  </div>
+
+  <!-- API Client & Page Logic -->
+  <script src="js/api.js"></script>
+  <script>
+    let currentYear = 2024;
+    let currentGranularity = 'daily';
+    let overviewData = null;
+
+    function switchYear(year) {
+      currentYear = year;
+      document.getElementById('yearBtn2024').className = year === 2024
+        ? 'px-3 py-1 rounded text-[12px] font-medium bg-zinc-900 text-white transition-colors'
+        : 'px-3 py-1 rounded text-[12px] font-medium text-zinc-600 hover:text-zinc-900 transition-colors';
+      document.getElementById('yearBtn2023').className = year === 2023
+        ? 'px-3 py-1 rounded text-[12px] font-medium bg-zinc-900 text-white transition-colors'
+        : 'px-3 py-1 rounded text-[12px] font-medium text-zinc-600 hover:text-zinc-900 transition-colors';
+
+      loadAllTelemetryData();
+    }
+
+    function setGranularity(gran) {
+      currentGranularity = gran;
+      document.getElementById('granDailyBtn').className = gran === 'daily'
+        ? 'px-2.5 py-0.5 rounded text-[11px] font-medium bg-white text-zinc-900 shadow-xs'
+        : 'px-2.5 py-0.5 rounded text-[11px] font-medium text-zinc-600 hover:text-zinc-900';
+      document.getElementById('granMonthlyBtn').className = gran === 'monthly'
+        ? 'px-2.5 py-0.5 rounded text-[11px] font-medium bg-white text-zinc-900 shadow-xs'
+        : 'px-2.5 py-0.5 rounded text-[11px] font-medium text-zinc-600 hover:text-zinc-900';
+      loadTrendChart();
+    }
+
+    async function loadAllTelemetryData() {
+      loadOverviewKPIs();
+      loadTrendChart();
+      loadDayTypeAnalysis();
+      loadChemicalBreakdown();
+      loadWastewaterEtp();
+      loadCorrelationMatrix();
+    }
+
+    async function loadOverviewKPIs() {
+      try {
+        const data = await Api.getOverview();
+        overviewData = data;
+        const yearData = data[String(currentYear)];
+        if (!yearData) return;
+
+        document.getElementById('kpiProductionTons').textContent = NumFormat.format(yearData.production_tons, 1);
+        document.getElementById('kpiProductionKg').textContent = `${NumFormat.int(yearData.production_kg)} kg · ${yearData.days} days`;
+        document.getElementById('kpiMachineUtil').textContent = `${NumFormat.pct(yearData.avg_machine_util_pct)} util`;
+        document.getElementById('kpiAvgFixation').textContent = `${NumFormat.pct(yearData.avg_dye_fixation_pct)} fixation`;
+
+        document.getElementById('kpiSolidWasteKg').textContent = NumFormat.int(yearData.solid_waste_kg);
+        document.getElementById('kpiSolidWastePct').textContent = `${NumFormat.pct(yearData.solid_waste_pct, 2)} total mass fraction`;
+        document.getElementById('kpiYarnWasteKg').textContent = `${NumFormat.int(yearData.yarn_waste_kg)} kg`;
+
+        document.getElementById('kpiChemicalWasteKg').textContent = NumFormat.int(yearData.chemical_waste_kg);
+        document.getElementById('kpiChemicalWastePerTon').textContent = `${NumFormat.format(yearData.chemical_per_1000kg, 2)} kg / ton production`;
+
+        document.getElementById('kpiWastewaterL').textContent = NumFormat.format(yearData.wastewater_L / 1000000, 2);
+        document.getElementById('kpiWastewaterPerKg').textContent = `${NumFormat.format(yearData.wastewater_L_per_kg, 2)} L / kg fabric finished`;
+      } catch (err) {
+        console.warn('Using baseline KPI defaults');
+      }
+    }
+
+    async function loadTrendChart() {
+      const stream = document.getElementById('trendStreamSelect').value;
+      try {
+        const records = await Api.getWastageTrend(currentYear, stream, currentGranularity);
+        if (!records || records.length === 0) return;
+
+        document.getElementById('trendSummaryStat').textContent = `Loaded ${records.length} ${currentGranularity} records (${currentYear})`;
+
+        const valKey = stream === 'solid' ? 'Solid_Waste_kg'
+          : stream === 'yarn' ? 'Yarn_Waste_kg'
+          : stream === 'chemical' ? 'Chemical_Waste_kg'
+          : stream === 'wastewater' ? 'Wastewater_L'
+          : 'Solid_Waste_kg';
+
+        const values = records.map(r => r[valKey] || (r.Solid_Waste_kg || 0));
+        const maxVal = Math.max(...values, 1);
+        const minVal = Math.min(...values, 0);
+
+        const width = 700;
+        const height = 180;
+        const pts = values.map((v, i) => {
+          const x = (i / (values.length - 1)) * width;
+          const y = height - ((v - minVal) / (maxVal - minVal || 1)) * 140 - 20;
+          return `${x.toFixed(1)},${y.toFixed(1)}`;
+        });
+
+        const lineD = `M${pts.join(' L')}`;
+        const areaD = `M0,${height} L${pts.join(' L')} L${width},${height} Z`;
+
+        document.getElementById('trendLinePath').setAttribute('d', lineD);
+        document.getElementById('trendAreaPath').setAttribute('d', areaD);
+
+        const strokeColor = stream === 'chemical' ? '#dc2626' : stream === 'yarn' ? '#0d9488' : stream === 'wastewater' ? '#0284c7' : '#0969da';
+        document.getElementById('trendLinePath').setAttribute('stroke', strokeColor);
+
+      } catch (err) {
+        console.warn('Could not load trend data from API');
+      }
+    }
+
+    async function loadDayTypeAnalysis() {
+      try {
+        const data = await Api.getDayTypeAnalysis();
+        data.forEach(item => {
+          const type = item.Day_Type;
+          if (type === 'bad') {
+            document.getElementById('badSolidPct').textContent = `${item['Solid_Waste_%_of_Production']}% waste`;
+            document.getElementById('badUtil').textContent = `${item['Machine_Utilization_%']}% machine util`;
+            document.getElementById('badFixation').textContent = `${item['Dye_Fixation_Ratio_%']}% dye fixation`;
+          } else if (type === 'normal') {
+            document.getElementById('normalSolidPct').textContent = `${item['Solid_Waste_%_of_Production']}% waste`;
+            document.getElementById('normalUtil').textContent = `${item['Machine_Utilization_%']}% machine util`;
+            document.getElementById('normalFixation').textContent = `${item['Dye_Fixation_Ratio_%']}% dye fixation`;
+          } else if (type === 'good') {
+            document.getElementById('goodSolidPct').textContent = `${item['Solid_Waste_%_of_Production']}% waste`;
+            document.getElementById('goodUtil').textContent = `${item['Machine_Utilization_%']}% machine util`;
+            document.getElementById('goodFixation').textContent = `${item['Dye_Fixation_Ratio_%']}% dye fixation`;
+          }
+        });
+      } catch (err) {
+        console.warn('Could not load day-type analysis from API');
+      }
+    }
+
+    async function loadChemicalBreakdown() {
+      try {
+        const data = await Api.getChemicalBreakdown(currentYear);
+        const tbody = document.getElementById('chemicalTableBody');
+        tbody.innerHTML = '';
+        data.slice(0, 8).forEach(row => {
+          const tr = document.createElement('tr');
+          tr.className = 'hover:bg-zinc-50 transition-colors';
+          tr.innerHTML = `
+            <td class="py-2 px-3 font-medium text-zinc-900">${row.month_name}</td>
+            <td class="py-2 px-2 text-right font-digits text-zinc-600">${NumFormat.int(row.salt_kg)}</td>
+            <td class="py-2 px-2 text-right font-digits text-zinc-600">${NumFormat.int(row.alkali_kg)}</td>
+            <td class="py-2 px-2 text-right font-digits text-zinc-600">${NumFormat.int(row.dye_kg)}</td>
+            <td class="py-2 px-2 text-right font-digits text-zinc-600">${NumFormat.int(row.acid_kg)}</td>
+            <td class="py-2 px-3 text-right font-digits font-medium text-red-600">${NumFormat.int(row.chemical_waste_kg)}</td>
+          `;
+          tbody.appendChild(tr);
+        });
+      } catch (err) {
+        console.warn('Could not load chemical breakdown');
+      }
+    }
+
+    async function loadWastewaterEtp() {
+      try {
+        const data = await Api.getWastewaterEtp(currentYear);
+        const tbody = document.getElementById('etpTableBody');
+        tbody.innerHTML = '';
+
+        let totalRecycled = 0;
+        let totalDrained = 0;
+        let totalPh = 0;
+
+        data.forEach(row => {
+          totalRecycled += row.recycled_L;
+          totalDrained += row.drained_L;
+          totalPh += row.ph_avg;
+        });
+
+        document.getElementById('etpTotalRecycled').textContent = `${NumFormat.format(totalRecycled / 1000000, 2)}M`;
+        document.getElementById('etpTotalDrained').textContent = `${NumFormat.format(totalDrained / 1000000, 2)}M`;
+        document.getElementById('etpAvgQuality').textContent = `pH ${(totalPh / (data.length || 1)).toFixed(2)}`;
+
+        data.slice(0, 8).forEach(row => {
+          const tr = document.createElement('tr');
+          tr.className = 'hover:bg-zinc-50 transition-colors';
+          tr.innerHTML = `
+            <td class="py-2 px-3 font-medium text-zinc-900">${row.month_name}</td>
+            <td class="py-2 px-2 text-right font-digits text-zinc-600">${NumFormat.format(row.wastewater_L / 1000000, 2)}M</td>
+            <td class="py-2 px-2 text-right font-digits text-zinc-800 font-medium">${NumFormat.format(row.recycled_L / 1000000, 2)}M</td>
+            <td class="py-2 px-2 text-right font-digits text-zinc-500">${NumFormat.format(row.drained_L / 1000000, 2)}M</td>
+            <td class="py-2 px-3 text-right font-digits font-medium text-emerald-600">${row.ph_avg.toFixed(2)}</td>
+          `;
+          tbody.appendChild(tr);
+        });
+      } catch (err) {
+        console.warn('Could not load wastewater ETP data');
+      }
+    }
+
+    async function loadCorrelationMatrix() {
+      const target = document.getElementById('corrTargetSelect').value;
+      const container = document.getElementById('correlationBarsContainer');
+      try {
+        const data = await Api.getCorrelation(target);
+        container.innerHTML = '';
+        data.slice(0, 10).forEach(item => {
+          const r = item.correlation;
+          const isPos = r >= 0;
+          const pct = Math.abs(r) * 100;
+          const colorClass = isPos ? 'bg-[#0969da]' : 'bg-red-500';
+          const textClass = isPos ? 'text-zinc-900' : 'text-red-600';
+
+          const div = document.createElement('div');
+          div.className = 'p-2.5 rounded-md bg-zinc-50 border border-zinc-200/80 flex flex-col gap-1.5';
+          div.innerHTML = `
+            <div class="flex items-center justify-between text-[11px]">
+              <span class="font-normal font-sans text-zinc-800 truncate" title="${item.feature}">${item.feature}</span>
+              <span class="font-digits font-medium ${textClass}">${r >= 0 ? '+' : ''}${r.toFixed(4)}</span>
+            </div>
+            <div class="w-full h-1.5 bg-zinc-200 rounded overflow-hidden">
+              <div class="h-full ${colorClass} rounded" style="width: ${pct}%;"></div>
+            </div>
+          `;
+          container.appendChild(div);
+        });
+      } catch (err) {
+        console.warn('Could not load correlation matrix');
+      }
+    }
+
+    // Auto-init on load
+    document.addEventListener('DOMContentLoaded', () => {
+      loadAllTelemetryData();
+    });
+  </script>
+</body>
+
+</html>

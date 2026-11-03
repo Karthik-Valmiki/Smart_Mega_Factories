@@ -1,0 +1,11 @@
+{
+  "name": "textile-dyeing-waste-console",
+  "version": "1.0.0",
+  "description": "Textile Dyeing Waste Analytics, ML Forecasting & MILP Logistics Console",
+  "scripts": {
+    "api": "python -m uvicorn api.main:app --reload --host 0.0.0.0 --port 8000"
+  },
+  "keywords": ["textile-dyeing", "ml", "milp", "waste-intelligence", "react"],
+  "author": "",
+  "license": "MIT"
+}

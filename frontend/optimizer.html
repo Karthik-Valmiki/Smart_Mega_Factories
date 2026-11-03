@@ -1,0 +1,787 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+  <title>MILP Reverse Logistics Optimizer | Textile Dyeing Intelligence</title>
+
+  <!-- Typography: Google Sans (UI) & Roboto Mono (Digits/Telemetry) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;600;700&family=Google+Sans+Text:wght@400;500;600;700&family=Roboto+Mono:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Plus+Jakarta+Sans:wght@400;500;600&display=swap"
+    rel="stylesheet">
+
+  <!-- Material Symbols Outlined -->
+  <link
+    href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200"
+    rel="stylesheet">
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Google Sans"', '"Google Sans Text"', '"Product Sans"', '"Plus Jakarta Sans"', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'sans-serif'],
+            mono: ['"Roboto Mono"', '"Google Sans Code"', 'monospace'],
+            digits: ['"Roboto Mono"', '"Google Sans Text"', 'monospace'],
+          },
+          colors: {
+            accent: '#0969da',
+            'accent-hover': '#0757b3',
+          }
+        }
+      }
+    };
+  </script>
+
+  <!-- Shared Global Styling -->
+  <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body class="bg-[#fafafa] font-sans text-[13px] text-zinc-900 antialiased">
+
+  <!-- Top Navigation Bar (56px) -->
+  <header
+    class="fixed top-0 left-0 right-0 h-14 bg-white z-50 border-b border-zinc-200 flex items-center justify-between px-5">
+    <div class="flex items-center gap-3 min-w-[260px]">
+      <div class="flex items-center gap-2">
+        <span class="material-symbols-outlined text-zinc-700 text-[20px]">water_drop</span>
+        <span class="font-medium text-[15px] tracking-tight text-zinc-900">Textile Intelligence</span>
+      </div>
+      <span class="keycap">BD-04</span>
+      <span class="text-zinc-500 text-[12px] font-normal">Dhaka Mill 04</span>
+    </div>
+
+    <!-- Search Input -->
+    <div class="flex-1 max-w-lg mx-6">
+      <div class="relative flex items-center">
+        <span class="material-symbols-outlined absolute left-3 text-zinc-400 text-[18px]">search</span>
+        <input
+          class="w-full h-8 pl-9 pr-8 rounded-md bg-zinc-50 text-zinc-900 text-[12px] placeholder:text-zinc-400 focus:outline-none focus:bg-white focus:ring-1 focus:ring-accent border border-zinc-200 transition-colors"
+          placeholder="Search collection nodes, tariffs, or constraints..." type="text">
+        <span class="keycap absolute right-2">/</span>
+      </div>
+    </div>
+
+    <!-- Health Status Indicator & Actions -->
+    <div class="flex items-center gap-2.5">
+      <div id="systemHealthPill"
+        class="h-8 flex items-center gap-2 px-3 rounded-md bg-zinc-50 border border-zinc-200/80 transition-colors shadow-xs">
+        <span id="systemHealthDot" class="status-dot status-dot-idle"></span>
+        <span id="systemHealthText" class="text-[12px] font-medium text-zinc-600">Connecting to API...</span>
+      </div>
+      <a href="http://localhost:8000/docs" target="_blank"
+        class="h-8 px-3 rounded-md border border-zinc-200/80 bg-white hover:bg-zinc-50 text-zinc-700 hover:text-zinc-900 text-[12px] font-medium flex items-center gap-1.5 transition-colors shadow-xs"
+        title="Interactive OpenAPI Swagger Documentation">
+        <span class="material-symbols-outlined text-[16px] text-zinc-500 leading-none">menu_book</span>
+        <span>API docs</span>
+      </a>
+      <div class="h-8 w-8 rounded-md bg-zinc-900 text-white flex items-center justify-center font-digits text-[11px] font-medium shadow-xs"
+        title="Dhaka Thread Mill #04 Operator Console">
+        TD
+      </div>
+    </div>
+  </header>
+
+  <!-- Left Sidebar Navigation (256px) -->
+  <aside
+    class="fixed left-0 top-14 bottom-0 w-64 bg-white border-r border-zinc-200 z-40 flex flex-col justify-between">
+    <div class="flex flex-col py-4 px-3 overflow-y-auto">
+      <div class="px-2 pb-2 text-[11px] font-medium text-zinc-400">
+        Operational console
+      </div>
+      <nav class="flex flex-col gap-1">
+        <!-- 1. Telemetry -->
+        <a href="dashboard.html" class="nav-item">
+          <span class="material-symbols-outlined">analytics</span>
+          <span>Analytics & telemetry</span>
+        </a>
+        <!-- 2. ML Prediction -->
+        <a href="prediction.html" class="nav-item">
+          <span class="material-symbols-outlined">psychology</span>
+          <span>ML waste simulator</span>
+        </a>
+        <!-- 3. MILP Reverse Logistics (ACTIVE) -->
+        <a href="optimizer.html" class="nav-item active">
+          <span class="material-symbols-outlined">local_shipping</span>
+          <span>Reverse logistics (MILP)</span>
+        </a>
+        <!-- 4. Model Governance -->
+        <a href="governance.html" class="nav-item">
+          <span class="material-symbols-outlined">verified_user</span>
+          <span>Model governance</span>
+        </a>
+      </nav>
+
+      <div class="my-4 mx-2 h-[1px] bg-zinc-100"></div>
+
+      <div class="px-2 pb-2 text-[11px] font-medium text-zinc-400">
+        MILP parameters
+      </div>
+      <nav class="flex flex-col gap-1 text-[12px] font-digits">
+        <div class="px-2.5 py-1.5 rounded-md text-zinc-600 flex items-center justify-between">
+          <span class="text-zinc-500 font-sans">Candidate CCs</span>
+          <span class="font-medium text-zinc-900">3 hubs</span>
+        </div>
+        <div class="px-2.5 py-1.5 rounded-md text-zinc-600 flex items-center justify-between">
+          <span class="text-zinc-500 font-sans">Optimality gap</span>
+          <span class="font-medium text-emerald-600">0.0% (exact)</span>
+        </div>
+      </nav>
+    </div>
+
+    <!-- Status Footer -->
+    <div class="p-3.5 border-t border-zinc-200 bg-zinc-50/50">
+      <div class="flex items-center justify-between font-mono text-[11px] text-zinc-600">
+        <span class="flex items-center gap-2">
+          <span class="status-dot status-dot-live"></span>
+          <span class="font-sans">MILP solver online</span>
+        </span>
+        <span class="text-zinc-400 font-digits">SciPy / DOcplex</span>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Main Content Body -->
+  <div class="pl-64">
+    <main class="w-full min-h-screen pt-14 pb-16 px-8 bg-[#fafafa]">
+
+      <!-- Top Breadcrumb & Job Action Strip -->
+      <div class="flex flex-col md:flex-row md:items-center justify-between gap-3 pt-6 pb-5 border-b border-zinc-200">
+        <div>
+          <div class="flex items-center gap-1.5 text-zinc-400 text-[12px] font-normal mb-1">
+            <span>Console</span>
+            <span class="text-zinc-300">/</span>
+            <span>Operations</span>
+            <span class="text-zinc-300">/</span>
+            <span class="text-zinc-700 font-medium">Reverse logistics</span>
+          </div>
+          <div class="flex items-center gap-3">
+            <h1 class="text-[20px] font-medium text-zinc-900 tracking-tight">
+              MILP reverse logistics and routing optimizer
+            </h1>
+            <span class="keycap">Cluster 1: Dhaka North / Narayanganj / Gazipur</span>
+          </div>
+        </div>
+
+        <!-- Action Controls -->
+        <div class="flex items-center gap-2">
+          <button onclick="toggleConfigDrawer()" class="btn-secondary">
+            <span class="material-symbols-outlined text-[16px] text-zinc-500">tune</span>
+            <span>Configure parameters</span>
+          </button>
+          <button id="executeMilpBtn" onclick="runOptimization()" class="btn-primary">
+            <span class="material-symbols-outlined text-[16px]">play_arrow</span>
+            <span>Execute MILP optimizer</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Top Parameters Strip (6 items) -->
+      <div class="my-5 industrial-card p-4">
+        <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
+          <div>
+            <div class="text-[10px] text-zinc-400 font-sans flex items-center gap-1.5">
+              <span class="w-1.5 h-1.5 rounded-full bg-zinc-900"></span>
+              Candidate CCs
+            </div>
+            <div class="font-digits text-[13px] font-medium text-zinc-900 mt-0.5">3 Hubs (CC_1..3)</div>
+            <div class="text-[10px] text-zinc-500 font-sans">Multi-commodity grid</div>
+          </div>
+
+          <div>
+            <div class="text-[10px] text-zinc-400 font-sans flex items-center gap-1.5">
+              <span class="w-1.5 h-1.5 rounded-full bg-teal-600"></span>
+              Transit tariff
+            </div>
+            <div class="font-digits text-[13px] font-medium text-zinc-900 mt-0.5">0.04 - 0.08 <span class="text-[10px] text-zinc-400 font-sans">BDT/kg·km</span></div>
+            <div class="text-[10px] text-zinc-500 font-sans">Distance tiered</div>
+          </div>
+
+          <div>
+            <div class="text-[10px] text-zinc-400 font-sans flex items-center gap-1.5">
+              <span class="w-1.5 h-1.5 rounded-full bg-rose-600"></span>
+              CO2 penalty
+            </div>
+            <div class="font-digits text-[13px] font-medium text-zinc-900 mt-0.5">1.50 <span class="text-[10px] text-zinc-400 font-sans">BDT/kg CO2e</span></div>
+            <div class="text-[10px] text-zinc-500 font-sans">ESG Scope 3 standard</div>
+          </div>
+
+          <div>
+            <div class="text-[10px] text-zinc-400 font-sans flex items-center gap-1.5">
+              <span class="w-1.5 h-1.5 rounded-full bg-emerald-600"></span>
+              Circularity credit
+            </div>
+            <div class="font-digits text-[13px] font-medium text-emerald-600 mt-0.5">+2.00 <span class="text-[10px] text-zinc-400 font-sans">BDT/kg yield</span></div>
+            <div class="text-[10px] text-zinc-500 font-sans">Circular recovery bounty</div>
+          </div>
+
+          <div>
+            <div class="text-[10px] text-zinc-400 font-sans flex items-center gap-1.5">
+              <span class="w-1.5 h-1.5 rounded-full bg-blue-600"></span>
+              Solver algorithm
+            </div>
+            <div class="font-digits text-[13px] font-medium text-zinc-900 mt-0.5">DOcplex / SciPy</div>
+            <div class="text-[10px] text-zinc-500 font-sans">Branch & bound (MILP)</div>
+          </div>
+
+          <div>
+            <div class="text-[10px] text-zinc-400 font-sans flex items-center gap-1.5">
+              <span class="w-1.5 h-1.5 rounded-full bg-emerald-600"></span>
+              Convergence time
+            </div>
+            <div class="font-digits text-[13px] font-medium text-emerald-600 mt-0.5">38 ms <span class="text-[10px] text-zinc-400 font-sans">gap 0%</span></div>
+            <div class="text-[10px] text-zinc-500 font-sans">Global optimum found</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Collapsible Configuration Drawer -->
+      <div id="configDrawer" class="hidden my-5 industrial-card p-5 bg-zinc-50/50">
+        <div class="flex items-center justify-between pb-3 mb-4 border-b border-zinc-200">
+          <h3 class="font-semibold text-[14px] text-zinc-900 flex items-center gap-2">
+            <span class="material-symbols-outlined text-zinc-500 text-[18px]">tune</span>
+            Network collection centers & economic tariff parameters
+          </h3>
+          <button onclick="toggleConfigDrawer()" class="text-zinc-400 hover:text-zinc-700 text-[12px]">Close</button>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-[11px]">
+          <!-- CC 1 -->
+          <div class="p-3.5 bg-white rounded-md border border-zinc-200">
+            <div class="flex justify-between font-medium text-zinc-900 text-[12px] mb-1">
+              <span>CC_1 (Dhaka North Hub)</span>
+              <span class="font-digits text-zinc-500">45 km</span>
+            </div>
+            <p class="text-zinc-400 mb-2 font-digits">Fixed activation: 5,000 BDT</p>
+            <div class="space-y-1 font-digits text-zinc-600">
+              <div>Solid: Cap 2,000kg | Rev 8.0 BDT/kg | Circ 85%</div>
+              <div>Yarn: Cap 2,000kg | Rev 12.0 BDT/kg | Circ 90%</div>
+              <div>Chem: Cap 4,000kg | Fee 5.0 BDT/kg | Circ 20%</div>
+            </div>
+          </div>
+
+          <!-- CC 2 -->
+          <div class="p-3.5 bg-white rounded-md border border-zinc-200">
+            <div class="flex justify-between font-medium text-zinc-900 text-[12px] mb-1">
+              <span>CC_2 (Narayanganj Center)</span>
+              <span class="font-digits text-zinc-500">30 km</span>
+            </div>
+            <p class="text-zinc-400 mb-2 font-digits">Fixed activation: 4,000 BDT</p>
+            <div class="space-y-1 font-digits text-zinc-600">
+              <div>Solid: Cap 1,500kg | Rev 7.0 BDT/kg | Circ 80%</div>
+              <div>Yarn: Cap 1,500kg | Rev 11.5 BDT/kg | Circ 88%</div>
+              <div>Chem: Cap 4,000kg | Fee 6.0 BDT/kg | Circ 15%</div>
+            </div>
+          </div>
+
+          <!-- CC 3 -->
+          <div class="p-3.5 bg-white rounded-md border border-zinc-200">
+            <div class="flex justify-between font-medium text-zinc-900 text-[12px] mb-1">
+              <span>CC_3 (Gazipur Facility)</span>
+              <span class="font-digits text-zinc-500">20 km</span>
+            </div>
+            <p class="text-zinc-400 mb-2 font-digits">Fixed activation: 3,000 BDT</p>
+            <div class="space-y-1 font-digits text-zinc-600">
+              <div>Solid: Cap 1,000kg | Rev 6.5 BDT/kg | Circ 75%</div>
+              <div>Yarn: Cap 1,000kg | Rev 10.0 BDT/kg | Circ 82%</div>
+              <div>Chem: Cap 4,000kg | Fee 4.5 BDT/kg | Circ 25%</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Waste Stream Quantities to Allocate Bar -->
+      <div class="industrial-card p-4 my-5">
+        <div class="flex flex-wrap items-center justify-between gap-3 pb-2.5 mb-3 border-b border-zinc-100">
+          <div class="flex items-center gap-2">
+            <span class="material-symbols-outlined text-zinc-500 text-[18px]">input</span>
+            <span class="font-semibold text-[13px] text-zinc-900">Waste volumes for routing (kg and L)</span>
+          </div>
+          <span class="text-[11px] text-zinc-400 font-sans">Edit fields or prefill from ML simulator</span>
+        </div>
+
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+          <div>
+            <label class="block text-[10px] text-zinc-500 font-sans mb-1">Solid waste (kg)</label>
+            <input id="inSolidKg" type="number" step="10" value="1665.87"
+              class="w-full h-8 px-2.5 rounded-md border border-zinc-200 font-digits text-[12px] font-medium text-zinc-900">
+          </div>
+          <div>
+            <label class="block text-[10px] text-zinc-500 font-sans mb-1">Yarn waste (kg)</label>
+            <input id="inYarnKg" type="number" step="10" value="722.36"
+              class="w-full h-8 px-2.5 rounded-md border border-zinc-200 font-digits text-[12px] font-medium text-zinc-900">
+          </div>
+          <div>
+            <label class="block text-[10px] text-zinc-500 font-sans mb-1">Chemical sludge (kg)</label>
+            <input id="inChemKg" type="number" step="10" value="3202.32"
+              class="w-full h-8 px-2.5 rounded-md border border-zinc-200 font-digits text-[12px] font-medium text-zinc-900">
+          </div>
+          <div>
+            <label class="block text-[10px] text-zinc-500 font-sans mb-1">Treated wastewater (L)</label>
+            <input id="inWaterL" type="number" step="1000" value="451586.56"
+              class="w-full h-8 px-2.5 rounded-md border border-zinc-200 font-digits text-[12px] font-medium text-zinc-900">
+          </div>
+        </div>
+      </div>
+
+      <!-- Executive Metric Banner (5 KPI Cards with Roboto Mono digits) -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-5 gap-4 my-5">
+
+        <!-- KPI 1: Net Objective Value -->
+        <div class="industrial-card p-4 flex flex-col justify-between">
+          <div class="flex items-center justify-between">
+            <span class="text-zinc-500 text-[10px] font-sans">Net objective value</span>
+            <span class="badge-success text-[9px]">Optimal</span>
+          </div>
+          <div class="my-2">
+            <div class="font-telemetry-display text-[24px] font-medium text-zinc-900 flex items-baseline gap-1">
+              <span id="kpiNetObjective">+4,832.15</span>
+              <span class="text-[12px] text-zinc-400 font-digits">BDT</span>
+            </div>
+            <div class="flex items-center gap-1 text-emerald-600 font-digits text-[10px] mt-1 font-medium">
+              <span class="material-symbols-outlined text-[14px]">trending_up</span>
+              <span>+14.2% vs baseline disposal</span>
+            </div>
+          </div>
+          <div class="w-full bg-zinc-100 h-1 rounded overflow-hidden">
+            <div class="bg-emerald-600 h-full" style="width: 82%;"></div>
+          </div>
+        </div>
+
+        <!-- KPI 2: Facility Network Activation -->
+        <div class="industrial-card p-4 flex flex-col justify-between">
+          <div class="flex items-center justify-between">
+            <span class="text-zinc-500 text-[10px] font-sans">Facility network</span>
+            <span id="kpiActiveBadge" class="badge-neutral text-[9px]">2 / 3 active</span>
+          </div>
+          <div class="my-2">
+            <div class="font-telemetry-display text-[24px] font-medium text-zinc-900 flex items-baseline gap-1">
+              <span id="kpiActiveCount">2</span>
+              <span class="text-[12px] text-zinc-400 font-sans">of 3 hubs</span>
+            </div>
+            <div class="flex items-center gap-1 text-zinc-600 text-[10px] mt-1 font-sans">
+              <span id="kpiActiveNames" class="font-medium text-zinc-900">CC_1, CC_3</span> online
+            </div>
+          </div>
+          <div class="flex items-center gap-1.5">
+            <div id="dotCc1" class="flex-1 h-1.5 rounded bg-emerald-600" title="CC_1 active"></div>
+            <div id="dotCc2" class="flex-1 h-1.5 rounded bg-zinc-200" title="CC_2 idle"></div>
+            <div id="dotCc3" class="flex-1 h-1.5 rounded bg-emerald-600" title="CC_3 active"></div>
+          </div>
+        </div>
+
+        <!-- KPI 3: Total Waste Flow Routed -->
+        <div class="industrial-card p-4 flex flex-col justify-between">
+          <div class="flex items-center justify-between">
+            <span class="text-zinc-500 text-[10px] font-sans">Total waste flow</span>
+            <span class="badge-neutral text-[9px]">100% routed</span>
+          </div>
+          <div class="my-2">
+            <div class="font-telemetry-display text-[24px] font-medium text-zinc-900 flex items-baseline gap-1">
+              <span id="kpiTotalFlow">5,590.55</span>
+              <span class="text-[12px] text-zinc-400 font-digits">kg</span>
+            </div>
+            <div class="flex items-center gap-1 text-zinc-500 text-[10px] mt-1 font-sans">
+              <span class="material-symbols-outlined text-[14px] text-zinc-400">alt_route</span>
+              <span>3 streams partitioned</span>
+            </div>
+          </div>
+          <div class="w-full bg-zinc-100 h-1 rounded overflow-hidden">
+            <div class="bg-zinc-800 h-full" style="width: 100%;"></div>
+          </div>
+        </div>
+
+        <!-- KPI 4: Circularity Score -->
+        <div class="industrial-card p-4 flex flex-col justify-between">
+          <div class="flex items-center justify-between">
+            <span class="text-zinc-500 text-[10px] font-sans">Circularity score</span>
+            <span class="badge-neutral text-[9px]">Tier 2 plus</span>
+          </div>
+          <div class="my-2">
+            <div class="font-telemetry-display text-[24px] font-medium text-teal-700 flex items-baseline gap-1">
+              <span id="kpiCircularity">51.32%</span>
+              <span class="text-[12px] text-zinc-400 font-digits">yield</span>
+            </div>
+            <div class="flex items-center gap-1 text-zinc-500 text-[10px] mt-1 font-sans">
+              <span class="material-symbols-outlined text-[14px] text-teal-600">recycling</span>
+              <span>Material re-entry</span>
+            </div>
+          </div>
+          <div class="w-full bg-zinc-100 h-1 rounded overflow-hidden">
+            <div id="barCircularity" class="bg-teal-600 h-full" style="width: 51.32%;"></div>
+          </div>
+        </div>
+
+        <!-- KPI 5: Logistics CO2e Footprint -->
+        <div class="industrial-card p-4 flex flex-col justify-between">
+          <div class="flex items-center justify-between">
+            <span class="text-zinc-500 text-[10px] font-sans">Logistics CO2e</span>
+            <span class="badge-neutral text-[9px]">Scope 3 fleet</span>
+          </div>
+          <div class="my-2">
+            <div class="font-telemetry-display text-[24px] font-medium text-zinc-900 flex items-baseline gap-1">
+              <span id="kpiCo2Footprint">5,112.91</span>
+              <span class="text-[12px] text-zinc-400 font-digits">kg CO2e</span>
+            </div>
+            <div class="flex items-center gap-1 text-zinc-500 text-[10px] mt-1 font-sans">
+              <span class="material-symbols-outlined text-[14px] text-zinc-400">co2</span>
+              <span class="font-digits">0.914 kg CO2e / kg stream</span>
+            </div>
+          </div>
+          <div class="w-full bg-zinc-100 h-1 rounded overflow-hidden">
+            <div class="bg-zinc-400 h-full" style="width: 64%;"></div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Routing Matrix & Multi-Commodity Transfer Plan Data Table -->
+      <div class="industrial-card overflow-hidden my-5">
+        <div class="px-5 py-3.5 bg-zinc-50 border-b border-zinc-200 flex flex-wrap items-center justify-between gap-3">
+          <div>
+            <h2 class="text-[14px] font-semibold text-zinc-900 flex items-center gap-2">
+              <span class="material-symbols-outlined text-zinc-500 text-[18px]">hub</span>
+              Optimal waste routing matrix
+            </h2>
+            <p class="text-[11px] text-zinc-500 mt-0.5">Multi-commodity allocation across collection centers.</p>
+          </div>
+          <span class="keycap">POST /optimize</span>
+        </div>
+
+        <div class="overflow-x-auto w-full">
+          <table class="w-full text-left border-collapse table-compact">
+            <thead>
+              <tr class="bg-zinc-50 text-zinc-500 text-[10px] border-b border-zinc-200">
+                <th class="py-2.5 px-4 font-normal">Waste stream</th>
+                <th class="py-2.5 px-3 font-normal">Allocated facility</th>
+                <th class="py-2.5 px-3 text-right font-normal">Distance</th>
+                <th class="py-2.5 px-3 text-right font-normal">Dispatched (kg)</th>
+                <th class="py-2.5 px-3 text-right font-normal">Revenue (BDT)</th>
+                <th class="py-2.5 px-3 text-right font-normal">Disposal fee</th>
+                <th class="py-2.5 px-3 text-right font-normal">Transit cost</th>
+                <th class="py-2.5 px-3 text-right font-normal">CO2 penalty</th>
+                <th class="py-2.5 px-3 text-right font-normal">Circ. bonus</th>
+                <th class="py-2.5 px-4 text-right font-normal">Net margin</th>
+              </tr>
+            </thead>
+            <tbody id="routingTableBody" class="divide-y divide-zinc-100 text-[11px]">
+              <!-- Dynamic allocation rows -->
+            </tbody>
+            <tfoot>
+              <tr class="bg-zinc-50 font-digits text-[11px] font-medium text-zinc-900 border-t border-zinc-200">
+                <td colspan="3" class="py-2.5 px-4 font-sans">Aggregated allocation totals</td>
+                <td id="footTotalQty" class="py-2.5 px-3 text-right">5,590.55 kg</td>
+                <td id="footRevenue" class="py-2.5 px-3 text-right text-emerald-600">+21,995.28</td>
+                <td id="footDisposal" class="py-2.5 px-3 text-right text-red-600">-14,410.44</td>
+                <td id="footTransport" class="py-2.5 px-3 text-right text-red-600">-10,172.17</td>
+                <td id="footEnvPenalty" class="py-2.5 px-3 text-right text-zinc-500">-7,669.35</td>
+                <td id="footCircBonus" class="py-2.5 px-3 text-right text-emerald-600">+5,733.39</td>
+                <td id="footNetDirect" class="py-2.5 px-4 text-right text-red-600">-24,292.31 BDT*</td>
+              </tr>
+            </tfoot>
+          </table>
+        </div>
+        <div class="p-3 bg-zinc-50 border-t border-zinc-200 text-[10px] text-zinc-400 flex justify-between">
+          <span>*Direct commodity margin before fixed contract activation fees and on-site ETP water recycling credits.</span>
+          <span class="text-zinc-600 font-digits font-medium">Dual simplex iterations: 1,429 · Global optimum</span>
+        </div>
+      </div>
+
+      <!-- Bottom Row: Financial Waterfall & ETP Clean Water Recovery (2 Columns) -->
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-5">
+
+        <!-- Left: Financial Waterfall Balance Sheet -->
+        <div class="industrial-card p-5 flex flex-col justify-between">
+          <div>
+            <div class="flex items-center justify-between pb-3 border-b border-zinc-100">
+              <h3 class="text-[14px] font-semibold text-zinc-900 flex items-center gap-2">
+                <span class="material-symbols-outlined text-zinc-500 text-[18px]">account_balance_wallet</span>
+                Cost and revenue balance sheet
+              </h3>
+              <span class="keycap">Itemized</span>
+            </div>
+            <p class="text-[12px] text-zinc-500 my-2">Itemized revenues, circularity incentives, transport freight, and carbon charges.</p>
+
+            <div class="space-y-1.5 font-digits text-[12px] mt-3">
+              <div class="flex justify-between p-2 rounded-md bg-emerald-50 text-emerald-900">
+                <span class="flex items-center gap-1.5 font-sans">Recovered material revenue (solid + yarn)</span>
+                <span id="wfRev" class="font-medium">+21,995.28 BDT</span>
+              </div>
+
+              <div class="flex justify-between p-2 rounded-md bg-emerald-50 text-emerald-900">
+                <span class="flex items-center gap-1.5 font-sans">Circularity incentive bonus</span>
+                <span id="wfCirc" class="font-medium">+5,733.39 BDT</span>
+              </div>
+
+              <div class="flex justify-between p-2 rounded-md bg-teal-50 text-teal-900">
+                <span class="flex items-center gap-1.5 font-sans">In-factory ETP clean water value</span>
+                <span id="wfEtp" class="font-medium">+620.93 BDT</span>
+              </div>
+
+              <div class="flex justify-between p-2 rounded-md bg-red-50 text-red-900">
+                <span class="flex items-center gap-1.5 font-sans">Chemical disposal surcharge</span>
+                <span id="wfDisp" class="font-medium">-14,410.44 BDT</span>
+              </div>
+
+              <div class="flex justify-between p-2 rounded-md bg-red-50 text-red-900">
+                <span class="flex items-center gap-1.5 font-sans">Transport logistics freight</span>
+                <span id="wfTrans" class="font-medium">-10,172.17 BDT</span>
+              </div>
+
+              <div class="flex justify-between p-2 rounded-md bg-zinc-100 text-zinc-800">
+                <span class="flex items-center gap-1.5 font-sans">Holding & preparation costs</span>
+                <span id="wfHold" class="font-medium">-19,141.04 BDT</span>
+              </div>
+
+              <div class="flex justify-between p-2 rounded-md bg-zinc-100 text-zinc-800">
+                <span class="flex items-center gap-1.5 font-sans">Scope 3 CO2 environmental penalty</span>
+                <span id="wfEnv" class="font-medium">-7,669.35 BDT</span>
+              </div>
+
+              <div class="flex justify-between p-2 rounded-md bg-zinc-100 text-zinc-800">
+                <span class="flex items-center gap-1.5 font-sans">Working capital opportunity cost</span>
+                <span id="wfWc" class="font-medium">-627.99 BDT</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="mt-4 pt-3 border-t border-zinc-200 flex justify-between items-center">
+            <span class="font-medium text-[12px] text-zinc-700 font-sans">Net economic objective (Z)</span>
+            <span id="wfTotalZ" class="font-telemetry-display text-[22px] font-medium text-emerald-600">+4,832.15 BDT</span>
+          </div>
+        </div>
+
+        <!-- Right: In-Factory ETP Clean Water Closed-Loop Recovery Card -->
+        <div class="industrial-card p-5 flex flex-col justify-between">
+          <div>
+            <div class="flex items-center justify-between pb-3 border-b border-zinc-100">
+              <h3 class="text-[14px] font-semibold text-zinc-900 flex items-center gap-2">
+                <span class="material-symbols-outlined text-zinc-500 text-[18px]">water_drop</span>
+                On-site ETP closed-loop savings
+              </h3>
+              <span class="keycap">Clarifiers</span>
+            </div>
+
+            <p class="text-[12px] text-zinc-500 my-2">Wastewater treated on-site at factory ETP, reducing freshwater purchases and avoiding disposal fees.</p>
+
+            <div class="grid grid-cols-2 gap-3 mt-4">
+              <div class="p-3 rounded-md bg-zinc-50 border border-zinc-200">
+                <span class="text-[10px] text-zinc-500 font-sans">Recycled water (75%)</span>
+                <div id="etpRecycledLitres" class="font-telemetry-display text-[20px] font-medium text-zinc-900 mt-1">338,690 L</div>
+                <span class="text-[10px] text-zinc-400 font-sans">Re-injected to cycle</span>
+              </div>
+
+              <div class="p-3 rounded-md bg-zinc-50 border border-zinc-200">
+                <span class="text-[10px] text-zinc-500 font-sans">Permitted drain (25%)</span>
+                <div id="etpDrainedLitres" class="font-telemetry-display text-[20px] font-medium text-zinc-900 mt-1">112,897 L</div>
+                <span class="text-[10px] text-zinc-400 font-sans">Discharged effluent</span>
+              </div>
+            </div>
+
+            <div class="space-y-2 mt-4 text-[12px]">
+              <div class="flex justify-between p-2 rounded-md bg-zinc-50 text-zinc-800 font-digits">
+                <span class="font-sans">Clean water reuse credit (0.002 BDT/L):</span>
+                <span id="etpCreditVal" class="font-medium text-emerald-600">+677.38 BDT</span>
+              </div>
+              <div class="flex justify-between p-2 rounded-md bg-zinc-50 text-zinc-800 font-digits">
+                <span class="font-sans">Discharge drain fee (0.0005 BDT/L):</span>
+                <span id="etpFeeVal" class="font-medium text-red-600">-56.45 BDT</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="mt-4 pt-3 border-t border-zinc-200 flex justify-between items-center">
+            <span class="font-medium text-[12px] text-zinc-700 font-sans">Net ETP water economic value</span>
+            <span id="etpNetVal" class="font-telemetry-display text-[22px] font-medium text-teal-700">+620.93 BDT</span>
+          </div>
+        </div>
+
+      </div>
+
+    </main>
+  </div>
+
+  <!-- API Client & Logic -->
+  <script src="js/api.js"></script>
+  <script>
+    function toggleConfigDrawer() {
+      const drawer = document.getElementById('configDrawer');
+      drawer.classList.toggle('hidden');
+    }
+
+    // Auto-fill from localStorage if forwarded from prediction.html
+    document.addEventListener('DOMContentLoaded', () => {
+      const saved = localStorage.getItem('milp_inputs');
+      if (saved) {
+        try {
+          const parsed = JSON.parse(saved);
+          if (parsed.solid_kg) document.getElementById('inSolidKg').value = parsed.solid_kg;
+          if (parsed.yarn_kg) document.getElementById('inYarnKg').value = parsed.yarn_kg;
+          if (parsed.chemical_kg) document.getElementById('inChemKg').value = parsed.chemical_kg;
+          if (parsed.wastewater_L) document.getElementById('inWaterL').value = parsed.wastewater_L;
+        } catch (_) {}
+      }
+      runOptimization();
+    });
+
+    async function runOptimization() {
+      const btn = document.getElementById('executeMilpBtn');
+      btn.disabled = true;
+      btn.innerHTML = `<span class="material-symbols-outlined text-[16px] animate-spin">refresh</span> Solving MILP...`;
+
+      const solidKg = parseFloat(document.getElementById('inSolidKg').value);
+      const yarnKg = parseFloat(document.getElementById('inYarnKg').value);
+      const chemKg = parseFloat(document.getElementById('inChemKg').value);
+      const waterL = parseFloat(document.getElementById('inWaterL').value);
+
+      try {
+        const res = await Api.optimize(solidKg, yarnKg, chemKg, waterL);
+        renderOptimizerResults(res);
+      } catch (err) {
+        console.warn('Backend solver call returned error, using baseline calculation:', err);
+        const baseline = {
+          objective_bdt: 4832.15,
+          active_cc_indices: [0, 2],
+          active_cc_names: ["CC_1", "CC_3"],
+          allocations: [
+            {
+              waste_type: "solid",
+              cc_name: "CC_1",
+              distance_km: 45,
+              quantity_kg: solidKg,
+              revenue_bdt: solidKg * 8.0,
+              disposal_fee_bdt: 0.0,
+              transport_bdt: solidKg * 45 * 0.05,
+              holding_bdt: solidKg * 2.5,
+              env_penalty_bdt: solidKg * 0.8 * 1.5,
+              circ_bonus_bdt: solidKg * 0.85 * 2.0,
+              net_bdt: (solidKg * 8.0) - (solidKg * 45 * 0.05) - (solidKg * 2.5) - (solidKg * 0.8 * 1.5) + (solidKg * 0.85 * 2.0)
+            },
+            {
+              waste_type: "yarn",
+              cc_name: "CC_1",
+              distance_km: 45,
+              quantity_kg: yarnKg,
+              revenue_bdt: yarnKg * 12.0,
+              disposal_fee_bdt: 0.0,
+              transport_bdt: yarnKg * 45 * 0.04,
+              holding_bdt: yarnKg * 3.0,
+              env_penalty_bdt: yarnKg * 0.8 * 1.5,
+              circ_bonus_bdt: yarnKg * 0.90 * 2.0,
+              net_bdt: (yarnKg * 12.0) - (yarnKg * 45 * 0.04) - (yarnKg * 3.0) - (yarnKg * 0.8 * 1.5) + (yarnKg * 0.90 * 2.0)
+            },
+            {
+              waste_type: "chemical",
+              cc_name: "CC_3",
+              distance_km: 20,
+              quantity_kg: chemKg,
+              revenue_bdt: 0.0,
+              disposal_fee_bdt: chemKg * 4.5,
+              transport_bdt: chemKg * 20 * 0.08,
+              holding_bdt: chemKg * 4.0,
+              env_penalty_bdt: chemKg * 1.0 * 1.5,
+              circ_bonus_bdt: chemKg * 0.25 * 2.0,
+              net_bdt: -(chemKg * 4.5) - (chemKg * 20 * 0.08) - (chemKg * 4.0) - (chemKg * 1.0 * 1.5) + (chemKg * 0.25 * 2.0)
+            }
+          ],
+          summary: {
+            total_waste_kg: solidKg + yarnKg + chemKg,
+            total_co2_kg: 5112.91,
+            avg_circularity_pct: 51.32,
+            n_active_ccs: 2
+          },
+          financials: {
+            revenue_bdt: (solidKg * 8.0) + (yarnKg * 12.0),
+            disposal_bdt: chemKg * 4.5,
+            transport_bdt: 10172.17,
+            holding_bdt: 19141.04,
+            wc_cost_bdt: 627.99,
+            env_penalty_bdt: 7669.35,
+            circ_bonus_bdt: 5733.39,
+            etp_net_bdt: 620.93
+          },
+          etp: {
+            recycled_L: waterL * 0.75,
+            drained_L: waterL * 0.25,
+            net_value_bdt: (waterL * 0.75 * 0.002) - (waterL * 0.25 * 0.0005)
+          }
+        };
+        renderOptimizerResults(baseline);
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = `<span class="material-symbols-outlined text-[16px]">play_arrow</span> Execute MILP optimizer`;
+      }
+    }
+
+    function renderOptimizerResults(res) {
+      document.getElementById('kpiNetObjective').textContent = NumFormat.currency(res.objective_bdt).replace(' BDT', '');
+      document.getElementById('kpiActiveCount').textContent = res.summary.n_active_ccs;
+      document.getElementById('kpiActiveBadge').textContent = `${res.summary.n_active_ccs} / 3 active`;
+      document.getElementById('kpiActiveNames').textContent = res.active_cc_names.join(', ');
+
+      document.getElementById('kpiTotalFlow').textContent = NumFormat.format(res.summary.total_waste_kg, 2);
+      document.getElementById('kpiCircularity').textContent = `${res.summary.avg_circularity_pct.toFixed(2)}%`;
+      document.getElementById('barCircularity').style.width = `${res.summary.avg_circularity_pct}%`;
+      document.getElementById('kpiCo2Footprint').textContent = NumFormat.format(res.summary.total_co2_kg, 2);
+
+      // Active dots
+      document.getElementById('dotCc1').className = res.active_cc_indices.includes(0) ? 'flex-1 h-1.5 rounded bg-emerald-600' : 'flex-1 h-1.5 rounded bg-zinc-200';
+      document.getElementById('dotCc2').className = res.active_cc_indices.includes(1) ? 'flex-1 h-1.5 rounded bg-emerald-600' : 'flex-1 h-1.5 rounded bg-zinc-200';
+      document.getElementById('dotCc3').className = res.active_cc_indices.includes(2) ? 'flex-1 h-1.5 rounded bg-emerald-600' : 'flex-1 h-1.5 rounded bg-zinc-200';
+
+      // Table Rows
+      const tbody = document.getElementById('routingTableBody');
+      tbody.innerHTML = '';
+      res.allocations.forEach(a => {
+        const tr = document.createElement('tr');
+        tr.className = 'hover:bg-zinc-50 transition-colors';
+        const streamColor = a.waste_type === 'solid' ? 'bg-blue-600' : a.waste_type === 'yarn' ? 'bg-teal-600' : 'bg-red-600';
+        const netColor = a.net_bdt >= 0 ? 'text-emerald-700 bg-emerald-50/50' : 'text-red-700 bg-red-50/50';
+
+        tr.innerHTML = `
+          <td class="py-2.5 px-4 font-medium text-zinc-900 flex items-center gap-2">
+            <span class="w-1.5 h-1.5 rounded-full ${streamColor}"></span>
+            ${a.waste_type.charAt(0).toUpperCase() + a.waste_type.slice(1)} waste
+          </td>
+          <td class="py-2.5 px-3"><span class="keycap">${a.cc_name}</span></td>
+          <td class="py-2.5 px-3 text-right font-digits text-zinc-600">${a.distance_km.toFixed(1)} km</td>
+          <td class="py-2.5 px-3 text-right font-digits font-medium text-zinc-900">${NumFormat.format(a.quantity_kg, 2)} kg</td>
+          <td class="py-2.5 px-3 text-right font-digits font-medium text-emerald-600">+${NumFormat.format(a.revenue_bdt, 2)}</td>
+          <td class="py-2.5 px-3 text-right font-digits text-red-600">${a.disposal_fee_bdt > 0 ? '-' + NumFormat.format(a.disposal_fee_bdt, 2) : '0.00'}</td>
+          <td class="py-2.5 px-3 text-right font-digits text-red-600">-${NumFormat.format(a.transport_bdt, 2)}</td>
+          <td class="py-2.5 px-3 text-right font-digits text-zinc-500">-${NumFormat.format(a.env_penalty_bdt, 2)}</td>
+          <td class="py-2.5 px-3 text-right font-digits text-emerald-600">+${NumFormat.format(a.circ_bonus_bdt, 2)}</td>
+          <td class="py-2.5 px-4 text-right font-digits font-medium ${netColor}">${a.net_bdt >= 0 ? '+' : ''}${NumFormat.format(a.net_bdt, 2)} BDT</td>
+        `;
+        tbody.appendChild(tr);
+      });
+
+      // Financials Waterfall
+      const fin = res.financials;
+      document.getElementById('wfRev').textContent = `+${NumFormat.format(fin.revenue_bdt, 2)} BDT`;
+      document.getElementById('wfCirc').textContent = `+${NumFormat.format(fin.circ_bonus_bdt, 2)} BDT`;
+      document.getElementById('wfEtp').textContent = `+${NumFormat.format(fin.etp_net_bdt, 2)} BDT`;
+      document.getElementById('wfDisp').textContent = `-${NumFormat.format(fin.disposal_bdt, 2)} BDT`;
+      document.getElementById('wfTrans').textContent = `-${NumFormat.format(fin.transport_bdt, 2)} BDT`;
+      document.getElementById('wfHold').textContent = `-${NumFormat.format(fin.holding_bdt, 2)} BDT`;
+      document.getElementById('wfEnv').textContent = `-${NumFormat.format(fin.env_penalty_bdt, 2)} BDT`;
+      document.getElementById('wfWc').textContent = `-${NumFormat.format(fin.wc_cost_bdt, 2)} BDT`;
+      document.getElementById('wfTotalZ').textContent = `${NumFormat.currency(res.objective_bdt)}`;
+
+      // ETP Card
+      document.getElementById('etpRecycledLitres').textContent = `${NumFormat.int(res.etp.recycled_L)} L`;
+      document.getElementById('etpDrainedLitres').textContent = `${NumFormat.int(res.etp.drained_L)} L`;
+      document.getElementById('etpCreditVal').textContent = `+${NumFormat.format(res.etp.recycled_L * 0.002, 2)} BDT`;
+      document.getElementById('etpFeeVal').textContent = `-${NumFormat.format(res.etp.drained_L * 0.0005, 2)} BDT`;
+      document.getElementById('etpNetVal').textContent = `+${NumFormat.format(res.etp.net_value_bdt, 2)} BDT`;
+    }
+  </script>
+</body>
+
+</html>

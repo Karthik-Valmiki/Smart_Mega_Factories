@@ -1,0 +1,747 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+  <title>ML Waste Simulator | Textile Dyeing Intelligence</title>
+
+  <!-- Typography: Google Sans (UI) & Roboto Mono (Digits/Telemetry) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;600;700&family=Google+Sans+Text:wght@400;500;600;700&family=Roboto+Mono:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Plus+Jakarta+Sans:wght@400;500;600&display=swap"
+    rel="stylesheet">
+
+  <!-- Material Symbols Outlined -->
+  <link
+    href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200"
+    rel="stylesheet">
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Google Sans"', '"Google Sans Text"', '"Product Sans"', '"Plus Jakarta Sans"', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'sans-serif'],
+            mono: ['"Roboto Mono"', '"Google Sans Code"', 'monospace'],
+            digits: ['"Roboto Mono"', '"Google Sans Text"', 'monospace'],
+          },
+          colors: {
+            accent: '#0969da',
+            'accent-hover': '#0757b3',
+          }
+        }
+      }
+    };
+  </script>
+
+  <!-- Shared Global Styling -->
+  <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body class="bg-[#fafafa] font-sans text-[13px] text-zinc-900 antialiased">
+
+  <!-- Top Navigation Bar (56px) -->
+  <header
+    class="fixed top-0 left-0 right-0 h-14 bg-white z-50 border-b border-zinc-200 flex items-center justify-between px-5">
+    <div class="flex items-center gap-3 min-w-[260px]">
+      <div class="flex items-center gap-2">
+        <span class="material-symbols-outlined text-zinc-700 text-[20px]">water_drop</span>
+        <span class="font-medium text-[15px] tracking-tight text-zinc-900">Textile Intelligence</span>
+      </div>
+      <span class="keycap">BD-04</span>
+      <span class="text-zinc-500 text-[12px] font-normal">Dhaka Mill 04</span>
+    </div>
+
+    <!-- Search Input -->
+    <div class="flex-1 max-w-lg mx-6">
+      <div class="relative flex items-center">
+        <span class="material-symbols-outlined absolute left-3 text-zinc-400 text-[18px]">search</span>
+        <input
+          class="w-full h-8 pl-9 pr-8 rounded-md bg-zinc-50 text-zinc-900 text-[12px] placeholder:text-zinc-400 focus:outline-none focus:bg-white focus:ring-1 focus:ring-accent border border-zinc-200 transition-colors"
+          placeholder="Search batch recipe parameters or streams..." type="text">
+        <span class="keycap absolute right-2">/</span>
+      </div>
+    </div>
+
+    <!-- Health Status Indicator & Actions -->
+    <div class="flex items-center gap-2.5">
+      <div id="systemHealthPill"
+        class="h-8 flex items-center gap-2 px-3 rounded-md bg-zinc-50 border border-zinc-200/80 transition-colors shadow-xs">
+        <span id="systemHealthDot" class="status-dot status-dot-idle"></span>
+        <span id="systemHealthText" class="text-[12px] font-medium text-zinc-600">Connecting to API...</span>
+      </div>
+      <a href="http://localhost:8000/docs" target="_blank"
+        class="h-8 px-3 rounded-md border border-zinc-200/80 bg-white hover:bg-zinc-50 text-zinc-700 hover:text-zinc-900 text-[12px] font-medium flex items-center gap-1.5 transition-colors shadow-xs"
+        title="Interactive OpenAPI Swagger Documentation">
+        <span class="material-symbols-outlined text-[16px] text-zinc-500 leading-none">menu_book</span>
+        <span>API docs</span>
+      </a>
+      <div class="h-8 w-8 rounded-md bg-zinc-900 text-white flex items-center justify-center font-digits text-[11px] font-medium shadow-xs"
+        title="Dhaka Thread Mill #04 Operator Console">
+        TD
+      </div>
+    </div>
+  </header>
+
+  <!-- Left Sidebar Navigation (256px) -->
+  <aside
+    class="fixed left-0 top-14 bottom-0 w-64 bg-white border-r border-zinc-200 z-40 flex flex-col justify-between">
+    <div class="flex flex-col py-4 px-3 overflow-y-auto">
+      <div class="px-2 pb-2 text-[11px] font-medium text-zinc-400">
+        Operational console
+      </div>
+      <nav class="flex flex-col gap-1">
+        <!-- 1. Telemetry -->
+        <a href="dashboard.html" class="nav-item">
+          <span class="material-symbols-outlined">analytics</span>
+          <span>Analytics & telemetry</span>
+        </a>
+        <!-- 2. ML Prediction (ACTIVE) -->
+        <a href="prediction.html" class="nav-item active">
+          <span class="material-symbols-outlined">psychology</span>
+          <span>ML waste simulator</span>
+        </a>
+        <!-- 3. MILP Reverse Logistics -->
+        <a href="optimizer.html" class="nav-item">
+          <span class="material-symbols-outlined">local_shipping</span>
+          <span>Reverse logistics (MILP)</span>
+        </a>
+        <!-- 4. Model Governance -->
+        <a href="governance.html" class="nav-item">
+          <span class="material-symbols-outlined">verified_user</span>
+          <span>Model governance</span>
+        </a>
+      </nav>
+
+      <div class="my-4 mx-2 h-[1px] bg-zinc-100"></div>
+
+      <div class="px-2 pb-2 text-[11px] font-medium text-zinc-400">
+        Model specs
+      </div>
+      <nav class="flex flex-col gap-1 text-[12px] font-digits">
+        <div class="px-2.5 py-1.5 rounded-md text-zinc-600 flex items-center justify-between">
+          <span class="text-zinc-500 font-sans">Target count</span>
+          <span class="font-medium text-zinc-900">4 streams</span>
+        </div>
+        <div class="px-2.5 py-1.5 rounded-md text-zinc-600 flex items-center justify-between">
+          <span class="text-zinc-500 font-sans">Inference time</span>
+          <span class="font-medium text-emerald-600">&lt; 15 ms</span>
+        </div>
+      </nav>
+    </div>
+
+    <!-- Status Footer -->
+    <div class="p-3.5 border-t border-zinc-200 bg-zinc-50/50">
+      <div class="flex items-center justify-between font-mono text-[11px] text-zinc-600">
+        <span class="flex items-center gap-2">
+          <span class="status-dot status-dot-live"></span>
+          <span class="font-sans">XGBoost ensemble</span>
+        </span>
+        <span class="text-zinc-400 font-digits">R² = 0.81</span>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Main Content Body -->
+  <div class="pl-64">
+    <main class="w-full min-h-screen pt-14 pb-16 px-8 bg-[#fafafa]">
+
+      <!-- Page Header & Presets -->
+      <div class="flex flex-col md:flex-row md:items-center justify-between gap-3 pt-6 pb-5 border-b border-zinc-200">
+        <div>
+          <div class="flex items-center gap-1.5 text-zinc-400 text-[12px] font-normal mb-1">
+            <span>Console</span>
+            <span class="text-zinc-300">/</span>
+            <span>Machine learning</span>
+            <span class="text-zinc-300">/</span>
+            <span class="text-zinc-700 font-medium">Simulator</span>
+          </div>
+          <h1 class="text-[20px] font-medium text-zinc-900 tracking-tight">
+            ML waste prediction simulator
+          </h1>
+          <p class="text-[12px] text-zinc-500 mt-0.5">
+            Forecast waste generation from recipe and shift parameters before starting factory runs.
+          </p>
+        </div>
+
+        <!-- Presets -->
+        <div class="flex items-center gap-2 flex-wrap">
+          <span class="text-[11px] text-zinc-400 font-medium">Presets:</span>
+          <button onclick="applyPreset('cotton')"
+            class="px-2.5 py-1 rounded-md bg-white hover:bg-zinc-50 border border-zinc-200 text-zinc-700 font-medium text-[11px] transition-colors flex items-center gap-1.5 shadow-xs">
+            <span class="w-1.5 h-1.5 rounded-full bg-zinc-900"></span>
+            Standard cotton (15.3t)
+          </button>
+          <button onclick="applyPreset('poly')"
+            class="px-2.5 py-1 rounded-md bg-white hover:bg-zinc-50 border border-zinc-200 text-zinc-700 font-medium text-[11px] transition-colors flex items-center gap-1.5 shadow-xs">
+            <span class="w-1.5 h-1.5 rounded-full bg-teal-600"></span>
+            High-volume polyester (35t)
+          </button>
+          <button onclick="applyPreset('reset')"
+            class="px-2.5 py-1 rounded-md text-zinc-500 hover:text-zinc-800 text-[11px] font-medium flex items-center gap-1 transition-colors">
+            <span class="material-symbols-outlined text-[14px]">restart_alt</span>
+            Reset defaults
+          </button>
+        </div>
+      </div>
+
+      <!-- Main Two-Column Layout (7 cols inputs / 5 cols results) -->
+      <div class="grid grid-cols-1 xl:grid-cols-12 gap-6 mt-6 items-start">
+
+        <!-- LEFT PANEL: 28 Factory Inputs Form (7 cols) -->
+        <form id="predictionForm" onsubmit="event.preventDefault(); runPrediction();" class="xl:col-span-7 flex flex-col gap-4">
+
+          <!-- Section A: Production & Scheduling -->
+          <div class="industrial-card p-5">
+            <div class="flex items-center justify-between pb-3 mb-4 border-b border-zinc-100">
+              <div class="flex items-center gap-2">
+                <span class="keycap">A</span>
+                <h2 class="text-[14px] font-semibold text-zinc-900">Production and scheduling parameters</h2>
+              </div>
+              <span class="keycap">Operational BOM</span>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3.5">
+              <div>
+                <label class="block text-[11px] font-medium text-zinc-600 mb-1">Production date</label>
+                <input id="inDate" type="date" value="2025-07-15"
+                  class="w-full h-8 px-2.5 rounded-md border border-zinc-200 bg-white font-digits text-[12px] focus:outline-none focus:border-zinc-400">
+              </div>
+
+              <div>
+                <div class="flex justify-between items-center mb-1">
+                  <label class="text-[11px] font-medium text-zinc-600">Production volume (kg)</label>
+                  <span id="tonCalc" class="text-[11px] font-digits text-zinc-900 font-medium">15.30 Tons</span>
+                </div>
+                <div class="relative">
+                  <input id="inProdKg" type="number" step="100" value="15300" oninput="updateTonCalc()"
+                    class="w-full h-8 px-2.5 pr-8 rounded-md border border-zinc-200 bg-white font-digits text-[12px] focus:outline-none focus:border-zinc-400">
+                  <span class="absolute right-2.5 top-2 text-[11px] text-zinc-400 font-digits pointer-events-none">kg</span>
+                </div>
+              </div>
+
+              <div>
+                <div class="flex justify-between items-center mb-1">
+                  <label class="text-[11px] font-medium text-zinc-600">Machine utilization</label>
+                  <span id="utilPctLabel" class="text-[11px] font-digits text-zinc-900 font-medium">85.0%</span>
+                </div>
+                <input id="inMachineUtil" type="range" min="40" max="100" step="0.5" value="85"
+                  oninput="document.getElementById('utilPctLabel').textContent = `${this.value}%`"
+                  class="w-full mt-2 accent-zinc-800">
+              </div>
+
+              <div>
+                <label class="block text-[11px] font-medium text-zinc-600 mb-1">Active workforce</label>
+                <input id="inWorkers" type="number" value="100"
+                  class="w-full h-8 px-2.5 rounded-md border border-zinc-200 bg-white font-digits text-[12px] focus:outline-none focus:border-zinc-400">
+              </div>
+
+              <div>
+                <label class="block text-[11px] font-medium text-zinc-600 mb-1">Dye batch count</label>
+                <input id="inBatchCount" type="number" value="280"
+                  class="w-full h-8 px-2.5 rounded-md border border-zinc-200 bg-white font-digits text-[12px] focus:outline-none focus:border-zinc-400">
+              </div>
+
+              <div>
+                <label class="block text-[11px] font-medium text-zinc-600 mb-1">Cycle time (hours)</label>
+                <input id="inCycleTime" type="number" step="0.5" value="6.0"
+                  class="w-full h-8 px-2.5 rounded-md border border-zinc-200 bg-white font-digits text-[12px] focus:outline-none focus:border-zinc-400">
+              </div>
+            </div>
+
+            <div class="mt-3.5 pt-3 border-t border-zinc-100 flex items-center justify-between">
+              <span class="text-[11px] text-zinc-500">Monthly demand factor:</span>
+              <div class="flex items-center gap-2">
+                <input id="inDemandFactor" type="number" step="0.05" value="1.0"
+                  class="w-20 h-7 px-2 rounded-md border border-zinc-200 font-digits text-[11px] text-right">
+                <span class="text-[11px] text-zinc-400">index</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Section B: Utilities & Specific Energy/Water -->
+          <div class="industrial-card p-5">
+            <div class="flex items-center justify-between pb-3 mb-4 border-b border-zinc-100">
+              <div class="flex items-center gap-2">
+                <span class="keycap">B</span>
+                <h2 class="text-[14px] font-semibold text-zinc-900">Energy and water utilities (SEC / SWC)</h2>
+              </div>
+              <span class="keycap">Real-time meters</span>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div class="p-3 rounded-md bg-zinc-50 border border-zinc-200">
+                <div class="flex justify-between items-center mb-1">
+                  <span class="text-[11px] font-medium text-zinc-600">Total energy consumption</span>
+                  <span id="secCalc" class="text-[11px] font-digits text-zinc-800 font-medium">1.63 kWh/kg</span>
+                </div>
+                <div class="relative">
+                  <input id="inEnergyKwh" type="number" step="500" value="25000" oninput="updateUtilityCalculations()"
+                    class="w-full h-8 px-2.5 pr-12 rounded-md border border-zinc-200 bg-white font-digits text-[12px] focus:outline-none focus:border-zinc-400">
+                  <span class="absolute right-2.5 top-2 text-[11px] text-zinc-400 font-digits pointer-events-none">kWh</span>
+                </div>
+              </div>
+
+              <div class="p-3 rounded-md bg-zinc-50 border border-zinc-200">
+                <div class="flex justify-between items-center mb-1">
+                  <span class="text-[11px] font-medium text-zinc-600">Total water consumption</span>
+                  <span id="swcCalc" class="text-[11px] font-digits text-zinc-800 font-medium">49.02 L/kg</span>
+                </div>
+                <div class="relative">
+                  <input id="inWaterL" type="number" step="5000" value="750000" oninput="updateUtilityCalculations()"
+                    class="w-full h-8 px-2.5 pr-12 rounded-md border border-zinc-200 bg-white font-digits text-[12px] focus:outline-none focus:border-zinc-400">
+                  <span class="absolute right-2.5 top-2 text-[11px] text-zinc-400 font-digits pointer-events-none">litres</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Section C: Chemistry & Effluent Quality -->
+          <div class="industrial-card p-5">
+            <div class="flex items-center justify-between pb-3 mb-4 border-b border-zinc-100">
+              <div class="flex items-center gap-2">
+                <span class="keycap">C</span>
+                <h2 class="text-[14px] font-semibold text-zinc-900">Dye bath chemistry and effluent quality</h2>
+              </div>
+              <span class="keycap">Bath analysis</span>
+            </div>
+
+            <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
+              <div>
+                <label class="block text-[10px] font-medium text-zinc-600 mb-1">Dye fixation %</label>
+                <input id="inFixationPct" type="number" step="0.5" value="65.0"
+                  class="w-full h-8 px-2 rounded-md border border-zinc-200 font-digits text-[11px]">
+              </div>
+              <div>
+                <label class="block text-[10px] font-medium text-zinc-600 mb-1">Liquor ratio</label>
+                <input id="inLiquorRatio" type="number" step="0.1" value="8.5"
+                  class="w-full h-8 px-2 rounded-md border border-zinc-200 font-digits text-[11px]">
+              </div>
+              <div>
+                <label class="block text-[10px] font-medium text-zinc-600 mb-1">Bath temp (&deg;C)</label>
+                <input id="inBathTemp" type="number" step="1" value="65.0"
+                  class="w-full h-8 px-2 rounded-md border border-zinc-200 font-digits text-[11px]">
+              </div>
+              <div>
+                <label class="block text-[10px] font-medium text-zinc-600 mb-1">Effluent pH</label>
+                <input id="inPh" type="number" step="0.1" value="8.5"
+                  class="w-full h-8 px-2 rounded-md border border-zinc-200 font-digits text-[11px]">
+              </div>
+              <div>
+                <label class="block text-[10px] font-medium text-zinc-600 mb-1">BOD (mg/L)</label>
+                <input id="inBod" type="number" step="10" value="200"
+                  class="w-full h-8 px-2 rounded-md border border-zinc-200 font-digits text-[11px]">
+              </div>
+              <div>
+                <label class="block text-[10px] font-medium text-zinc-600 mb-1">COD (mg/L)</label>
+                <input id="inCod" type="number" step="10" value="850"
+                  class="w-full h-8 px-2 rounded-md border border-zinc-200 font-digits text-[11px]">
+              </div>
+            </div>
+          </div>
+
+          <!-- Section D: Chemical Recipe Weights (kg & g/kg) -->
+          <div class="industrial-card p-5">
+            <div class="flex items-center justify-between pb-3 mb-4 border-b border-zinc-100">
+              <div class="flex items-center gap-2">
+                <span class="keycap">D</span>
+                <h2 class="text-[14px] font-semibold text-zinc-900">Chemical recipe dosing</h2>
+              </div>
+              <span class="keycap">Mass inputs</span>
+            </div>
+
+            <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
+              <!-- Dyestuff -->
+              <div class="p-2.5 rounded-md bg-zinc-50 border border-zinc-200">
+                <span class="block text-[11px] font-medium text-zinc-800">Dyestuff</span>
+                <input id="inDyeKg" type="number" step="1" value="50.0"
+                  class="w-full h-7 px-2 mt-1 rounded border border-zinc-200 font-digits text-[11px]">
+                <span class="block text-[10px] text-zinc-400 font-digits mt-0.5">27.0 g/kg</span>
+              </div>
+
+              <!-- Salt -->
+              <div class="p-2.5 rounded-md bg-zinc-50 border border-zinc-200">
+                <span class="block text-[11px] font-medium text-zinc-800">Glauber salt</span>
+                <input id="inSaltKg" type="number" step="5" value="320.0"
+                  class="w-full h-7 px-2 mt-1 rounded border border-zinc-200 font-digits text-[11px]">
+                <span class="block text-[10px] text-zinc-400 font-digits mt-0.5">280.0 g/kg</span>
+              </div>
+
+              <!-- Alkali -->
+              <div class="p-2.5 rounded-md bg-zinc-50 border border-zinc-200">
+                <span class="block text-[11px] font-medium text-zinc-800">Soda ash</span>
+                <input id="inAlkaliKg" type="number" step="5" value="110.0"
+                  class="w-full h-7 px-2 mt-1 rounded border border-zinc-200 font-digits text-[11px]">
+                <span class="block text-[10px] text-zinc-400 font-digits mt-0.5">73.0 g/kg</span>
+              </div>
+
+              <!-- Acid -->
+              <div class="p-2.5 rounded-md bg-zinc-50 border border-zinc-200">
+                <span class="block text-[11px] font-medium text-zinc-800">Acetic acid</span>
+                <input id="inAcidKg" type="number" step="2" value="30.0"
+                  class="w-full h-7 px-2 mt-1 rounded border border-zinc-200 font-digits text-[11px]">
+                <span class="block text-[10px] text-zinc-400 font-digits mt-0.5">50.0 g/kg</span>
+              </div>
+
+              <!-- Auxiliary -->
+              <div class="p-2.5 rounded-md bg-zinc-50 border border-zinc-200">
+                <span class="block text-[11px] font-medium text-zinc-800">Auxiliaries</span>
+                <input id="inAuxKg" type="number" step="5" value="80.0"
+                  class="w-full h-7 px-2 mt-1 rounded border border-zinc-200 font-digits text-[11px]">
+                <span class="block text-[10px] text-zinc-400 font-digits mt-0.5">70.0 g/kg</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Execution Action Strip -->
+          <div class="industrial-card p-4 flex flex-wrap items-center justify-between gap-3">
+            <div class="flex items-center gap-2 text-zinc-500 text-[11px]">
+              <span class="status-dot status-dot-live"></span>
+              <span>FastAPI ready: <span class="font-digits">POST /predict</span></span>
+            </div>
+
+            <div class="flex items-center gap-2">
+              <button id="predictAndOptBtn" type="button" onclick="runPredictAndOptimize()" class="btn-secondary">
+                <span class="material-symbols-outlined text-[16px] text-zinc-500">alt_route</span>
+                <span>Predict & run MILP</span>
+              </button>
+              <button id="runPredictBtn" type="submit" class="btn-primary">
+                <span class="material-symbols-outlined text-[16px]">play_arrow</span>
+                <span>Run waste prediction</span>
+              </button>
+            </div>
+          </div>
+
+        </form>
+
+        <!-- RIGHT PANEL: Live Predicted Waste Results (5 cols) -->
+        <div class="xl:col-span-5 flex flex-col gap-4">
+
+          <!-- Summary Header Card -->
+          <div class="industrial-card p-5">
+            <div class="flex items-center justify-between pb-3 border-b border-zinc-100">
+              <div class="flex items-center gap-2">
+                <span class="material-symbols-outlined text-zinc-500 text-[20px]">ssid_chart</span>
+                <h2 class="text-[14px] font-semibold text-zinc-900">Simulated waste quantities</h2>
+              </div>
+              <span id="predictStatusBadge" class="badge-neutral text-[10px]">Ready to predict</span>
+            </div>
+
+            <!-- 4 KPI Metrics Tiles with Roboto Mono numbers -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-4">
+
+              <!-- Tile 1: Solid Waste -->
+              <div class="p-3.5 rounded-md bg-zinc-50 border border-zinc-200">
+                <div class="flex items-center justify-between">
+                  <span class="text-[10px] text-zinc-500 font-sans">Solid fabric waste</span>
+                  <span class="badge-success text-[9px]">&le; 11% target</span>
+                </div>
+                <div class="flex items-baseline gap-1 my-1.5">
+                  <span id="resSolidKg" class="font-telemetry-display">1,665.87</span>
+                  <span class="font-digits text-[12px] text-zinc-500">kg</span>
+                </div>
+                <div class="flex justify-between font-digits text-[10px] text-zinc-500">
+                  <span id="resSolidPct">10.89% of production</span>
+                  <span class="text-emerald-700 font-medium">Nominal</span>
+                </div>
+              </div>
+
+              <!-- Tile 2: Yarn Waste -->
+              <div class="p-3.5 rounded-md bg-zinc-50 border border-zinc-200">
+                <div class="flex items-center justify-between">
+                  <span class="text-[10px] text-zinc-500 font-sans">Defective yarn</span>
+                  <span class="badge-neutral text-[9px]">Spinning loss</span>
+                </div>
+                <div class="flex items-baseline gap-1 my-1.5">
+                  <span id="resYarnKg" class="font-telemetry-display">722.36</span>
+                  <span class="font-digits text-[12px] text-zinc-500">kg</span>
+                </div>
+                <div class="flex justify-between font-digits text-[10px] text-zinc-500">
+                  <span id="resYarnPct">4.72% of production</span>
+                  <span class="text-teal-700 font-medium">Recyclable</span>
+                </div>
+              </div>
+
+              <!-- Tile 3: Chemical Waste Sludge -->
+              <div class="p-3.5 rounded-md bg-zinc-50 border border-zinc-200">
+                <div class="flex items-center justify-between">
+                  <span class="text-[10px] text-zinc-500 font-sans">Chemical sludge</span>
+                  <span class="badge-warning text-[9px]">Filter cake</span>
+                </div>
+                <div class="flex items-baseline gap-1 my-1.5">
+                  <span id="resChemicalKg" class="font-telemetry-display text-red-600">3,202.32</span>
+                  <span class="font-digits text-[12px] text-zinc-500">kg</span>
+                </div>
+                <div class="flex justify-between font-digits text-[10px] text-zinc-500">
+                  <span id="resChemicalPerTon">209.30 kg / ton</span>
+                  <span class="font-medium text-zinc-700">+8% coag</span>
+                </div>
+              </div>
+
+              <!-- Tile 4: Effluent Wastewater -->
+              <div class="p-3.5 rounded-md bg-zinc-50 border border-zinc-200">
+                <div class="flex items-center justify-between">
+                  <span class="text-[10px] text-zinc-500 font-sans">Effluent wastewater</span>
+                  <span class="badge-info text-[9px]">Raw stream</span>
+                </div>
+                <div class="flex items-baseline gap-1 my-1.5">
+                  <span id="resWastewaterL" class="font-telemetry-display">451,587</span>
+                  <span class="font-digits text-[12px] text-zinc-500">litres</span>
+                </div>
+                <div class="flex justify-between font-digits text-[10px] text-zinc-500">
+                  <span id="resWastewaterRate">29.52 L / kg fiber</span>
+                  <span class="font-medium text-zinc-700">Hydraulic</span>
+                </div>
+              </div>
+
+            </div>
+
+            <!-- Solid Residue Mass Balance Stacked Bar -->
+            <div class="mt-4 pt-3 border-t border-zinc-100">
+              <div class="flex justify-between items-center text-[11px] text-zinc-500 mb-1.5">
+                <span class="font-medium">Mass balance breakdown</span>
+                <span id="resTotalWasteKg" class="font-digits font-medium text-zinc-900">5,590.55 kg total</span>
+              </div>
+              <div class="w-full h-2 rounded bg-zinc-100 overflow-hidden flex">
+                <div id="barSolid" class="h-full bg-blue-600 transition-all duration-300" style="width: 30%;" title="Solid: 30%"></div>
+                <div id="barYarn" class="h-full bg-teal-500 transition-all duration-300" style="width: 13%;" title="Yarn: 13%"></div>
+                <div id="barChemical" class="h-full bg-red-500 transition-all duration-300" style="width: 57%;" title="Chemical: 57%"></div>
+              </div>
+              <div class="flex justify-between font-digits text-[10px] text-zinc-500 mt-1.5">
+                <span class="flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-blue-600"></span> Solid (30%)</span>
+                <span class="flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-teal-500"></span> Yarn (13%)</span>
+                <span class="flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-red-500"></span> Sludge (57%)</span>
+              </div>
+            </div>
+
+            <!-- Net Treated Effluent (ETP Closed Loop) -->
+            <div class="mt-4 p-3.5 rounded-md bg-zinc-50 border border-zinc-200 flex flex-col gap-1.5">
+              <div class="flex justify-between items-center">
+                <span class="text-[11px] font-medium text-zinc-800 flex items-center gap-1.5">
+                  <span class="material-symbols-outlined text-zinc-500 text-[18px]">water_voc</span>
+                  Net water routed to on-site ETP
+                </span>
+                <span class="badge-success text-[10px]">Zero liquid loop</span>
+              </div>
+              <div class="flex items-baseline gap-1.5 my-1">
+                <span id="resTreatedWwL" class="font-telemetry-display text-emerald-700">449,025</span>
+                <span class="font-digits text-[12px] text-zinc-500 font-normal">litres net to clarifiers</span>
+              </div>
+              <p class="text-[10px] font-digits text-zinc-400">
+                Formula: max(0, Wastewater_L - Chemical_Waste_kg * 0.8) moisture deduction.
+              </p>
+            </div>
+
+            <!-- Forward Action Button -->
+            <div class="mt-4">
+              <button onclick="forwardToOptimizer()"
+                class="w-full h-9 rounded-md bg-zinc-900 hover:bg-zinc-800 text-white font-medium text-[12px] flex items-center justify-center gap-2 transition-colors">
+                <span class="material-symbols-outlined text-[16px]">alt_route</span>
+                <span>Send to reverse logistics optimizer</span>
+                <span class="material-symbols-outlined text-[16px]">arrow_forward</span>
+              </button>
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </main>
+  </div>
+
+  <!-- API Client & Logic -->
+  <script src="js/api.js"></script>
+  <script>
+    let lastPredictions = {
+      Solid_Waste_kg: 1665.87,
+      Yarn_Waste_kg: 722.36,
+      Chemical_Waste_kg: 3202.32,
+      Wastewater_L: 451586.56,
+      treated_wastewater_L: 449024.70
+    };
+
+    function updateTonCalc() {
+      const kg = parseFloat(document.getElementById('inProdKg').value) || 0;
+      document.getElementById('tonCalc').textContent = `${(kg / 1000).toFixed(2)} Tons`;
+      updateUtilityCalculations();
+    }
+
+    function updateUtilityCalculations() {
+      const kg = parseFloat(document.getElementById('inProdKg').value) || 1;
+      const kwh = parseFloat(document.getElementById('inEnergyKwh').value) || 0;
+      const water = parseFloat(document.getElementById('inWaterL').value) || 0;
+
+      document.getElementById('secCalc').textContent = `${(kwh / kg).toFixed(2)} kWh/kg`;
+      document.getElementById('swcCalc').textContent = `${(water / kg).toFixed(2)} L/kg`;
+    }
+
+    function gatherInputs() {
+      const kg = parseFloat(document.getElementById('inProdKg').value);
+      return {
+        date: document.getElementById('inDate').value,
+        Production_Volume_kg: kg,
+        Production_Volume_ton: parseFloat((kg / 1000).toFixed(2)),
+        Machine_Utilization_pct: parseFloat(document.getElementById('inMachineUtil').value),
+        Number_of_Workers: parseInt(document.getElementById('inWorkers').value),
+        Total_Energy_kWh: parseFloat(document.getElementById('inEnergyKwh').value),
+        Total_Water_Consumption_L: parseFloat(document.getElementById('inWaterL').value),
+        Dye_Fixation_Ratio_pct: parseFloat(document.getElementById('inFixationPct').value),
+        Liquor_Ratio: parseFloat(document.getElementById('inLiquorRatio').value),
+        Temperature_C: parseFloat(document.getElementById('inBathTemp').value),
+        Cycle_Time_hr: parseFloat(document.getElementById('inCycleTime').value),
+        Dye_Batch_Count: parseInt(document.getElementById('inBatchCount').value),
+        Dye_Used_kg: parseFloat(document.getElementById('inDyeKg').value),
+        Salt_kg: parseFloat(document.getElementById('inSaltKg').value),
+        Alkali_kg: parseFloat(document.getElementById('inAlkaliKg').value),
+        Acid_kg: parseFloat(document.getElementById('inAcidKg').value),
+        Auxiliary_kg: parseFloat(document.getElementById('inAuxKg').value),
+        BOD_mg_per_L: parseFloat(document.getElementById('inBod').value),
+        COD_mg_per_L: parseFloat(document.getElementById('inCod').value),
+        pH: parseFloat(document.getElementById('inPh').value),
+        Energy_Consumption_kWh_per_kg: parseFloat((parseFloat(document.getElementById('inEnergyKwh').value) / kg).toFixed(2)),
+        Water_Consumption_L_per_kg: parseFloat((parseFloat(document.getElementById('inWaterL').value) / kg).toFixed(2)),
+        Monthly_Demand_Factor: parseFloat(document.getElementById('inDemandFactor').value),
+        Dye_Used_g_per_kg: parseFloat(((parseFloat(document.getElementById('inDyeKg').value) / kg) * 1000).toFixed(1)),
+        Salt_g_per_kg: parseFloat(((parseFloat(document.getElementById('inSaltKg').value) / kg) * 1000).toFixed(1)),
+        Alkali_g_per_kg: parseFloat(((parseFloat(document.getElementById('inAlkaliKg').value) / kg) * 1000).toFixed(1)),
+        Acid_g_per_kg: parseFloat(((parseFloat(document.getElementById('inAcidKg').value) / kg) * 1000).toFixed(1)),
+        Auxiliary_g_per_kg: parseFloat(((parseFloat(document.getElementById('inAuxKg').value) / kg) * 1000).toFixed(1))
+      };
+    }
+
+    async function runPrediction() {
+      const btn = document.getElementById('runPredictBtn');
+      const badge = document.getElementById('predictStatusBadge');
+      btn.disabled = true;
+      btn.innerHTML = `<span class="material-symbols-outlined text-[16px] animate-spin">refresh</span> Predicting...`;
+      badge.textContent = 'Running model...';
+      badge.className = 'badge-info text-[10px]';
+
+      const inputs = gatherInputs();
+      try {
+        const res = await Api.predict(inputs);
+        lastPredictions = {
+          ...res.predictions,
+          treated_wastewater_L: res.treated_wastewater_L
+        };
+        renderPredictionResults(res, inputs.Production_Volume_kg);
+        badge.textContent = 'Predicted 4 streams';
+        badge.className = 'badge-success text-[10px]';
+      } catch (err) {
+        console.warn('API inference failed, rendering computed estimate:', err);
+        const prod = inputs.Production_Volume_kg;
+        const fallback = {
+          predictions: {
+            Solid_Waste_kg: Math.round(prod * 0.1088),
+            Yarn_Waste_kg: Math.round(prod * 0.0472),
+            Chemical_Waste_kg: Math.round(prod * 0.2093),
+            Wastewater_L: Math.round(prod * 29.51)
+          },
+          treated_wastewater_L: Math.round(prod * 29.51 - (prod * 0.2093 * 0.8))
+        };
+        lastPredictions = {
+          ...fallback.predictions,
+          treated_wastewater_L: fallback.treated_wastewater_L
+        };
+        renderPredictionResults(fallback, prod);
+        badge.textContent = 'Offline prediction (rule-based)';
+        badge.className = 'badge-warning text-[10px]';
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = `<span class="material-symbols-outlined text-[16px]">play_arrow</span> Run waste prediction`;
+      }
+    }
+
+    function renderPredictionResults(res, prodKg) {
+      const p = res.predictions;
+      document.getElementById('resSolidKg').textContent = NumFormat.format(p.Solid_Waste_kg, 2);
+      document.getElementById('resYarnKg').textContent = NumFormat.format(p.Yarn_Waste_kg, 2);
+      document.getElementById('resChemicalKg').textContent = NumFormat.format(p.Chemical_Waste_kg, 2);
+      document.getElementById('resWastewaterL').textContent = NumFormat.int(p.Wastewater_L);
+      document.getElementById('resTreatedWwL').textContent = NumFormat.int(res.treated_wastewater_L);
+
+      const solidPct = (p.Solid_Waste_kg / prodKg * 100).toFixed(2);
+      const yarnPct = (p.Yarn_Waste_kg / prodKg * 100).toFixed(2);
+      const chemRate = (p.Chemical_Waste_kg / prodKg * 1000).toFixed(2);
+      const waterRate = (p.Wastewater_L / prodKg).toFixed(2);
+
+      document.getElementById('resSolidPct').textContent = `${solidPct}% of production`;
+      document.getElementById('resYarnPct').textContent = `${yarnPct}% of production`;
+      document.getElementById('resChemicalPerTon').textContent = `${chemRate} kg / ton`;
+      document.getElementById('resWastewaterRate').textContent = `${waterRate} L / kg fiber`;
+
+      const totalDryKg = p.Solid_Waste_kg + p.Yarn_Waste_kg + p.Chemical_Waste_kg;
+      document.getElementById('resTotalWasteKg').textContent = `${NumFormat.format(totalDryKg, 2)} kg total`;
+
+      const barSolidPct = Math.round(p.Solid_Waste_kg / totalDryKg * 100);
+      const barYarnPct = Math.round(p.Yarn_Waste_kg / totalDryKg * 100);
+      const barChemPct = 100 - barSolidPct - barYarnPct;
+
+      document.getElementById('barSolid').style.width = `${barSolidPct}%`;
+      document.getElementById('barYarn').style.width = `${barYarnPct}%`;
+      document.getElementById('barChemical').style.width = `${barChemPct}%`;
+    }
+
+    async function runPredictAndOptimize() {
+      await runPrediction();
+      forwardToOptimizer();
+    }
+
+    function forwardToOptimizer() {
+      localStorage.setItem('milp_inputs', JSON.stringify({
+        solid_kg: lastPredictions.Solid_Waste_kg,
+        yarn_kg: lastPredictions.Yarn_Waste_kg,
+        chemical_kg: lastPredictions.Chemical_Waste_kg,
+        wastewater_L: lastPredictions.treated_wastewater_L || lastPredictions.Wastewater_L
+      }));
+      window.location.href = 'optimizer.html';
+    }
+
+    function applyPreset(name) {
+      if (name === 'cotton') {
+        document.getElementById('inProdKg').value = 15300;
+        document.getElementById('inMachineUtil').value = 85;
+        document.getElementById('inWorkers').value = 100;
+        document.getElementById('inEnergyKwh').value = 25000;
+        document.getElementById('inWaterL').value = 750000;
+        document.getElementById('inFixationPct').value = 65.0;
+        document.getElementById('inLiquorRatio').value = 8.5;
+        document.getElementById('inBathTemp').value = 65.0;
+        document.getElementById('inPh').value = 8.5;
+        document.getElementById('inDyeKg').value = 50.0;
+        document.getElementById('inSaltKg').value = 320.0;
+        document.getElementById('inAlkaliKg').value = 110.0;
+        document.getElementById('inAcidKg').value = 30.0;
+        document.getElementById('inAuxKg').value = 80.0;
+      } else if (name === 'poly') {
+        document.getElementById('inProdKg').value = 35000;
+        document.getElementById('inMachineUtil').value = 92;
+        document.getElementById('inWorkers').value = 140;
+        document.getElementById('inEnergyKwh').value = 48000;
+        document.getElementById('inWaterL').value = 1400000;
+        document.getElementById('inFixationPct').value = 82.0;
+        document.getElementById('inLiquorRatio').value = 6.0;
+        document.getElementById('inBathTemp').value = 130.0;
+        document.getElementById('inPh').value = 5.5;
+        document.getElementById('inDyeKg').value = 95.0;
+        document.getElementById('inSaltKg').value = 120.0;
+        document.getElementById('inAlkaliKg').value = 45.0;
+        document.getElementById('inAcidKg').value = 80.0;
+        document.getElementById('inAuxKg').value = 150.0;
+      } else if (name === 'reset') {
+        applyPreset('cotton');
+      }
+      document.getElementById('utilPctLabel').textContent = `${document.getElementById('inMachineUtil').value}%`;
+      updateTonCalc();
+    }
+  </script>
+</body>
+
+</html>
