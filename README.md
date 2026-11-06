@@ -1,28 +1,4 @@
-# Textile Dyeing Waste Intelligence — Project Structure
-
-```
-.
-├── Textile_Dyeing_Dataset_Causal.xlsx   raw dataset (731 days × 39 columns)
-├── requirements.txt
-│
-├── model/
-│   ├── features.py      feature engineering (cyclical + interactions + lag/rolling)
-│   ├── train.py         training pipeline  →  python -m model.train
-│   ├── predict.py       inference wrapper
-│   └── artifacts/       (created by train.py)
-│       ├── xgb_model.pkl
-│       ├── feature_cols.json
-│       ├── best_params.json
-│       └── metrics.json
-│
-├── optimizer/
-│   └── milp.py          MILP solver (CPLEX via DOcplex, scipy fallback)
-│
-└── api/
-    └── main.py          FastAPI application
-```
-
-## Quick Start
+# Textile Dyeing Waste Intelligence 
 
 ### 1. Train the model
 ```bash
