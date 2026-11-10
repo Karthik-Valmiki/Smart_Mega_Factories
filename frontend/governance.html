@@ -53,44 +53,13 @@
         <span class="material-symbols-outlined text-zinc-700 text-[20px]">water_drop</span>
         <span class="font-semibold text-[15px] tracking-tight text-zinc-900">Textile Intelligence</span>
       </div>
-      <span class="keycap">BD-04</span>
-      <span class="text-zinc-500 text-[12px] font-normal">Dhaka Mill 04</span>
+      <span class="text-zinc-500 text-[12px] font-normal">Dhaka Textile Factory</span>
     </div>
 
-    <!-- Search Input -->
-    <div class="flex-1 max-w-lg mx-6">
-      <div class="relative flex items-center">
-        <span class="material-symbols-outlined absolute left-3 text-zinc-400 text-[18px]">search</span>
-        <input
-          class="w-full h-8 pl-9 pr-8 rounded-md bg-zinc-50 text-zinc-900 text-[12px] placeholder:text-zinc-400 focus:outline-none focus:bg-white focus:ring-1 focus:ring-accent border border-zinc-200 transition-colors"
-          placeholder="Search model weights, validation holdouts, or feature gain tags..." type="text">
-        <span class="keycap absolute right-2">/</span>
-      </div>
-    </div>
-
-    <!-- Health Status Indicator & Actions -->
-    <div class="flex items-center gap-2.5">
-      <div id="systemHealthPill"
-        class="h-8 flex items-center gap-2 px-3 rounded-md bg-zinc-50 border border-zinc-200/80 transition-colors shadow-xs">
-        <span id="systemHealthDot" class="status-dot status-dot-idle"></span>
-        <span id="systemHealthText" class="text-[12px] font-medium text-zinc-600">Connecting to API...</span>
-      </div>
-      <a href="http://localhost:8000/docs" target="_blank"
-        class="h-8 px-3 rounded-md border border-zinc-200/80 bg-white hover:bg-zinc-50 text-zinc-700 hover:text-zinc-900 text-[12px] font-medium flex items-center gap-1.5 transition-colors shadow-xs"
-        title="Interactive OpenAPI Swagger Documentation">
-        <span class="material-symbols-outlined text-[16px] text-zinc-500 leading-none">menu_book</span>
-        <span>API docs</span>
-      </a>
-      <div class="h-8 w-8 rounded-md bg-zinc-900 text-white flex items-center justify-center font-digits text-[11px] font-medium shadow-xs"
-        title="Dhaka Thread Mill #04 Operator Console">
-        TD
-      </div>
-    </div>
   </header>
 
   <!-- Left Sidebar Navigation (256px) -->
-  <aside
-    class="fixed left-0 top-14 bottom-0 w-64 bg-white border-r border-zinc-200 z-40 flex flex-col justify-between">
+  <aside class="fixed left-0 top-14 bottom-0 w-64 bg-white border-r border-zinc-200 z-40 flex flex-col justify-between">
     <div class="flex flex-col py-4 px-3 overflow-y-auto">
       <div class="px-2 pb-2 text-[11px] font-medium text-zinc-400">
         Operational console
@@ -106,10 +75,10 @@
           <span class="material-symbols-outlined">psychology</span>
           <span>ML waste simulator</span>
         </a>
-        <!-- 3. MILP Reverse Logistics -->
+        <!-- 3. Reverse Logistics Optimizer -->
         <a href="optimizer.html" class="nav-item">
           <span class="material-symbols-outlined">local_shipping</span>
-          <span>Reverse logistics (MILP)</span>
+          <span>Reverse logistics optimizer</span>
         </a>
         <!-- 4. Model Governance (ACTIVE) -->
         <a href="governance.html" class="nav-item active">
@@ -118,37 +87,12 @@
         </a>
       </nav>
 
-      <div class="my-4 mx-2 h-[1px] bg-zinc-100"></div>
-
-      <div class="px-2 pb-2 text-[11px] font-medium text-zinc-400">
-        Governance endpoints
-      </div>
-      <nav class="flex flex-col gap-1 text-[12px]">
-        <a href="http://localhost:8000/docs#/Model%20Info/model_metrics_model_metrics_get" target="_blank"
-          class="flex items-center justify-between px-2.5 py-1.5 rounded-md text-zinc-600 hover:bg-zinc-50 hover:text-zinc-900 transition-colors">
-          <span class="flex items-center gap-2">
-            <span class="material-symbols-outlined text-[16px] text-zinc-400">data_object</span>
-            <span>/model/metrics</span>
-          </span>
-          <span class="material-symbols-outlined text-[14px] text-zinc-400">open_in_new</span>
-        </a>
-        <a href="http://localhost:8000/docs#/Model%20Info/feature_importance_model_feature_importance_get" target="_blank"
-          class="flex items-center justify-between px-2.5 py-1.5 rounded-md text-zinc-600 hover:bg-zinc-50 hover:text-zinc-900 transition-colors">
-          <span class="flex items-center gap-2">
-            <span class="material-symbols-outlined text-[16px] text-zinc-400">equalizer</span>
-            <span>/model/feature-importance</span>
-          </span>
-          <span class="material-symbols-outlined text-[14px] text-zinc-400">open_in_new</span>
-        </a>
-      </nav>
     </div>
 
     <!-- Status Footer -->
     <div class="p-3.5 border-t border-zinc-200 bg-zinc-50/50">
       <div class="flex items-center justify-between text-[11px] text-zinc-600">
         <span class="flex items-center gap-2">
-          <span class="status-dot status-dot-live"></span>
-          <span>Validation verified</span>
         </span>
         <span class="font-digits text-zinc-400">v1.0.0</span>
       </div>
@@ -174,12 +118,11 @@
               Model governance and feature explainability
             </h1>
             <p class="text-[12px] text-zinc-500 mt-0.5">
-              Hold-out test benchmarks on 2024 production data, error bounds (MAPE, RMSE, MAE), and TreeSHAP gain rankings.
+              Hold-out test benchmarks on 2024 production data, error bounds (MAPE, RMSE, MAE), and TreeSHAP gain
+              rankings.
             </p>
           </div>
           <div class="flex items-center gap-2">
-            <span class="badge-success">2024 holdout verified</span>
-            <span class="keycap">XGBoost 2.0</span>
           </div>
         </div>
       </div>
@@ -187,23 +130,25 @@
       <!-- Artifact Meta Banner -->
       <div class="industrial-card p-3.5 my-5 flex flex-wrap items-center justify-between gap-3">
         <div class="flex items-center gap-3">
-          <div class="flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-zinc-100 text-zinc-800 text-[11px] font-medium">
+          <div
+            class="flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-zinc-100 text-zinc-800 text-[11px] font-medium">
             <span class="material-symbols-outlined text-zinc-500 text-[16px]">memory</span>
-            <span class="font-mono">xgb_model.pkl</span>
+            <span class="font-mono">xgboost_waste_model_improved.pkl</span>
           </div>
           <div class="flex items-center gap-2 text-zinc-500 text-[11px]">
             <span>Artifact: <code class="text-zinc-800 font-mono font-medium">model/artifacts/</code></span>
             <span>&bull;</span>
-            <span>Feature count: <strong class="text-zinc-800 font-digits font-semibold">45</strong> <span class="text-zinc-500">columns</span></span>
+            <span>Feature count: <strong class="text-zinc-800 font-digits font-semibold">67</strong> <span
+                class="text-zinc-500">columns</span></span>
             <span>&bull;</span>
             <span>Split: <strong class="text-zinc-800 font-medium">2023 train / 2024 test</strong></span>
           </div>
         </div>
 
         <div class="flex items-center gap-2 text-[11px]">
-          <span class="text-zinc-400">Endpoints:</span>
-          <span class="keycap">/model/metrics</span>
-          <span class="keycap">/model/feature-importance</span>
+          <span class="text-zinc-400">Artifact:</span>
+          <span class="keycap">xgboost_waste_model_improved.pkl</span>
+          <span class="keycap">model_metrics_xgb.csv</span>
         </div>
       </div>
 
@@ -217,27 +162,28 @@
               <span class="text-[11px] text-zinc-400 font-mono">Subsystem 01</span>
               <span class="badge-neutral text-[10px]">Baseline</span>
             </div>
-            <h2 class="text-[14px] font-semibold text-zinc-900">Solid waste regressor</h2>
-            <p class="text-[11px] text-zinc-500 mb-3">Target: <code class="font-mono text-zinc-700">Solid_Waste_kg</code></p>
+            <h2 class="text-[14px] font-semibold text-zinc-900">Solid waste model</h2>
+            <p class="text-[11px] text-zinc-500 mb-3">Target: <code
+                class="font-mono text-zinc-700">Solid_Waste_kg</code></p>
 
             <div class="grid grid-cols-2 gap-2 p-2.5 rounded-md bg-zinc-50 border border-zinc-200/80">
               <div>
                 <span class="text-[11px] text-zinc-400 block font-normal">R² score</span>
-                <span id="mSolidR2" class="font-digits text-[20px] font-semibold text-zinc-900">0.601</span>
+                <span id="mSolidR2" class="font-digits text-[20px] font-semibold text-zinc-900">0.590</span>
                 <span class="text-[10px] text-zinc-500 block">Acceptable fit</span>
               </div>
               <div>
                 <span class="text-[11px] text-zinc-400 block font-normal">MAPE</span>
-                <span id="mSolidMape" class="font-digits text-[20px] font-semibold text-zinc-900">12.2%</span>
+                <span id="mSolidMape" class="font-digits text-[20px] font-semibold text-zinc-900">12.3%</span>
                 <span class="text-[10px] text-emerald-600 block">Target &le; 15%</span>
               </div>
               <div class="pt-1">
                 <span class="text-[11px] text-zinc-400 block font-normal">MAE</span>
-                <span id="mSolidMae" class="font-digits font-semibold text-zinc-800 text-[12px]">251.2 kg</span>
+                <span id="mSolidMae" class="font-digits font-semibold text-zinc-800 text-[12px]">252.7 kg</span>
               </div>
               <div class="pt-1">
                 <span class="text-[11px] text-zinc-400 block font-normal">RMSE</span>
-                <span id="mSolidRmse" class="font-digits font-semibold text-zinc-800 text-[12px]">312.5 kg</span>
+                <span id="mSolidRmse" class="font-digits font-semibold text-zinc-800 text-[12px]">323.5 kg</span>
               </div>
             </div>
           </div>
@@ -254,27 +200,28 @@
               <span class="text-[11px] text-zinc-400 font-mono">Subsystem 02</span>
               <span class="badge-success text-[10px]">Strong fit</span>
             </div>
-            <h2 class="text-[14px] font-semibold text-zinc-900">Yarn waste regressor</h2>
-            <p class="text-[11px] text-zinc-500 mb-3">Target: <code class="font-mono text-zinc-700">Yarn_Waste_kg</code></p>
+            <h2 class="text-[14px] font-semibold text-zinc-900">Yarn waste model</h2>
+            <p class="text-[11px] text-zinc-500 mb-3">Target: <code class="font-mono text-zinc-700">Yarn_Waste_kg</code>
+            </p>
 
             <div class="grid grid-cols-2 gap-2 p-2.5 rounded-md bg-zinc-50 border border-zinc-200/80">
               <div>
                 <span class="text-[11px] text-zinc-400 block font-normal">R² score</span>
-                <span id="mYarnR2" class="font-digits text-[20px] font-semibold text-zinc-900">0.712</span>
+                <span id="mYarnR2" class="font-digits text-[20px] font-semibold text-zinc-900">0.686</span>
                 <span class="text-[10px] text-emerald-600 block">Good fit</span>
               </div>
               <div>
                 <span class="text-[11px] text-zinc-400 block font-normal">MAPE</span>
-                <span id="mYarnMape" class="font-digits text-[20px] font-semibold text-zinc-900">11.0%</span>
+                <span id="mYarnMape" class="font-digits text-[20px] font-semibold text-zinc-900">11.4%</span>
                 <span class="text-[10px] text-emerald-600 block">Optimal</span>
               </div>
               <div class="pt-1">
                 <span class="text-[11px] text-zinc-400 block font-normal">MAE</span>
-                <span id="mYarnMae" class="font-digits font-semibold text-zinc-800 text-[12px]">95.1 kg</span>
+                <span id="mYarnMae" class="font-digits font-semibold text-zinc-800 text-[12px]">99.2 kg</span>
               </div>
               <div class="pt-1">
                 <span class="text-[11px] text-zinc-400 block font-normal">RMSE</span>
-                <span id="mYarnRmse" class="font-digits font-semibold text-zinc-800 text-[12px]">120.3 kg</span>
+                <span id="mYarnRmse" class="font-digits font-semibold text-zinc-800 text-[12px]">122.7 kg</span>
               </div>
             </div>
           </div>
@@ -292,12 +239,13 @@
               <span class="badge-neutral text-[10px]">High precision</span>
             </div>
             <h2 class="text-[14px] font-semibold text-zinc-900">Chemical sludge model</h2>
-            <p class="text-[11px] text-zinc-500 mb-3">Target: <code class="font-mono text-zinc-700">Chemical_Waste_kg</code></p>
+            <p class="text-[11px] text-zinc-500 mb-3">Target: <code
+                class="font-mono text-zinc-700">Chemical_Waste_kg</code></p>
 
             <div class="grid grid-cols-2 gap-2 p-2.5 rounded-md bg-zinc-50 border border-zinc-200/80">
               <div>
                 <span class="text-[11px] text-zinc-400 block font-normal">R² score</span>
-                <span id="mChemR2" class="font-digits text-[20px] font-semibold text-zinc-900">0.793</span>
+                <span id="mChemR2" class="font-digits text-[20px] font-semibold text-zinc-900">0.791</span>
                 <span class="text-[10px] text-teal-600 block">High precision</span>
               </div>
               <div>
@@ -307,11 +255,11 @@
               </div>
               <div class="pt-1">
                 <span class="text-[11px] text-zinc-400 block font-normal">MAE</span>
-                <span id="mChemMae" class="font-digits font-semibold text-zinc-800 text-[12px]">311.5 kg</span>
+                <span id="mChemMae" class="font-digits font-semibold text-zinc-800 text-[12px]">312.3 kg</span>
               </div>
               <div class="pt-1">
                 <span class="text-[11px] text-zinc-400 block font-normal">RMSE</span>
-                <span id="mChemRmse" class="font-digits font-semibold text-zinc-800 text-[12px]">389.2 kg</span>
+                <span id="mChemRmse" class="font-digits font-semibold text-zinc-800 text-[12px]">389.1 kg</span>
               </div>
             </div>
           </div>
@@ -329,26 +277,27 @@
               <span class="badge-success text-[10px]">Top score</span>
             </div>
             <h2 class="text-[14px] font-semibold text-zinc-900">Wastewater effluent</h2>
-            <p class="text-[11px] text-zinc-500 mb-3">Target: <code class="font-mono text-zinc-700">Wastewater_L</code></p>
+            <p class="text-[11px] text-zinc-500 mb-3">Target: <code class="font-mono text-zinc-700">Wastewater_L</code>
+            </p>
 
             <div class="grid grid-cols-2 gap-2 p-2.5 rounded-md bg-zinc-50 border border-zinc-200/80">
               <div>
                 <span class="text-[11px] text-zinc-400 block font-normal">R² score</span>
-                <span id="mWaterR2" class="font-digits text-[20px] font-semibold text-emerald-600">0.814</span>
+                <span id="mWaterR2" class="font-digits text-[20px] font-semibold text-emerald-600">0.803</span>
                 <span class="text-[10px] text-emerald-600 block">Best in ensemble</span>
               </div>
               <div>
                 <span class="text-[11px] text-zinc-400 block font-normal">MAPE</span>
-                <span id="mWaterMape" class="font-digits text-[20px] font-semibold text-zinc-900">9.1%</span>
+                <span id="mWaterMape" class="font-digits text-[20px] font-semibold text-zinc-900">9.2%</span>
                 <span class="text-[10px] text-emerald-600 block">&lt; 10% standard</span>
               </div>
               <div class="pt-1">
                 <span class="text-[11px] text-zinc-400 block font-normal">MAE</span>
-                <span id="mWaterMae" class="font-digits font-semibold text-zinc-800 text-[12px]">50,709 L</span>
+                <span id="mWaterMae" class="font-digits font-semibold text-zinc-800 text-[12px]">50,575 L</span>
               </div>
               <div class="pt-1">
                 <span class="text-[11px] text-zinc-400 block font-normal">RMSE</span>
-                <span id="mWaterRmse" class="font-digits font-semibold text-zinc-800 text-[12px]">62,145 L</span>
+                <span id="mWaterRmse" class="font-digits font-semibold text-zinc-800 text-[12px]">63,549 L</span>
               </div>
             </div>
           </div>
@@ -391,9 +340,11 @@
           <!-- Populated by JS -->
         </div>
 
-        <div class="mt-4 pt-3 border-t border-zinc-100 flex flex-wrap items-center justify-between text-[11px] text-zinc-500">
-          <span>Tree explainer: TreeSHAP on <span class="font-digits">200</span> estimators &bull; Cumulative gain: <span class="font-digits font-medium text-zinc-700">89.6%</span></span>
-          <span class="text-zinc-500 font-mono text-[11px]">GET /model/feature-importance</span>
+        <div
+          class="mt-4 pt-3 border-t border-zinc-100 flex flex-wrap items-center justify-between text-[11px] text-zinc-500">
+          <span>Tree explainer: TreeSHAP on <span class="font-digits">700</span> estimators &bull; Cumulative gain:
+            <span class="font-digits font-medium text-zinc-700">89.6%</span></span>
+          <span class="text-zinc-400 font-mono text-[11px]">XGBoost · 4 targets · 2024 holdout</span>
         </div>
       </div>
 
@@ -417,25 +368,29 @@
               <tr>
                 <td class="py-2.5 px-3 font-medium text-zinc-900">Solid waste</td>
                 <td class="py-2.5 px-2 text-zinc-700 font-digits font-medium">kg</td>
-                <td class="py-2.5 px-4 text-zinc-600 text-[12px]">Solid fabric cuttings, cone remnants, and packaging waste per day</td>
+                <td class="py-2.5 px-4 text-zinc-600 text-[12px]">Solid fabric cuttings, cone remnants, and packaging
+                  waste per day</td>
                 <td class="py-2.5 px-3 text-right text-zinc-500 font-mono text-[11px]">Solid_Waste_kg</td>
               </tr>
               <tr>
                 <td class="py-2.5 px-3 font-medium text-zinc-900">Yarn waste</td>
                 <td class="py-2.5 px-2 text-zinc-700 font-digits font-medium">kg</td>
-                <td class="py-2.5 px-4 text-zinc-600 text-[12px]">Defective filament yarn and spinning winding loss per day</td>
+                <td class="py-2.5 px-4 text-zinc-600 text-[12px]">Defective filament yarn and spinning winding loss per
+                  day</td>
                 <td class="py-2.5 px-3 text-right text-zinc-500 font-mono text-[11px]">Yarn_Waste_kg</td>
               </tr>
               <tr>
                 <td class="py-2.5 px-3 font-medium text-zinc-900">Chemical sludge</td>
                 <td class="py-2.5 px-2 text-zinc-700 font-digits font-medium">kg</td>
-                <td class="py-2.5 px-4 text-zinc-600 text-[12px]">Spent dye bath sludge cake and chemical precipitate residue per day</td>
+                <td class="py-2.5 px-4 text-zinc-600 text-[12px]">Spent dye bath sludge cake and chemical precipitate
+                  residue per day</td>
                 <td class="py-2.5 px-3 text-right text-zinc-500 font-mono text-[11px]">Chemical_Waste_kg</td>
               </tr>
               <tr>
                 <td class="py-2.5 px-3 font-medium text-zinc-900">Wastewater effluent</td>
                 <td class="py-2.5 px-2 text-zinc-700 font-digits font-medium">litres</td>
-                <td class="py-2.5 px-4 text-zinc-600 text-[12px]">Effluent wastewater volume generated per day routed to ETP clarifiers</td>
+                <td class="py-2.5 px-4 text-zinc-600 text-[12px]">Effluent wastewater volume generated per day routed to
+                  ETP clarifiers</td>
                 <td class="py-2.5 px-3 text-right text-zinc-500 font-mono text-[11px]">Wastewater_L</td>
               </tr>
             </tbody>

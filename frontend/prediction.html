@@ -53,44 +53,14 @@
         <span class="material-symbols-outlined text-zinc-700 text-[20px]">water_drop</span>
         <span class="font-medium text-[15px] tracking-tight text-zinc-900">Textile Intelligence</span>
       </div>
-      <span class="keycap">BD-04</span>
-      <span class="text-zinc-500 text-[12px] font-normal">Dhaka Mill 04</span>
+      <span class="text-zinc-500 text-[12px] font-normal">Dhaka Textile Factory</span>
     </div>
 
-    <!-- Search Input -->
-    <div class="flex-1 max-w-lg mx-6">
-      <div class="relative flex items-center">
-        <span class="material-symbols-outlined absolute left-3 text-zinc-400 text-[18px]">search</span>
-        <input
-          class="w-full h-8 pl-9 pr-8 rounded-md bg-zinc-50 text-zinc-900 text-[12px] placeholder:text-zinc-400 focus:outline-none focus:bg-white focus:ring-1 focus:ring-accent border border-zinc-200 transition-colors"
-          placeholder="Search batch recipe parameters or streams..." type="text">
-        <span class="keycap absolute right-2">/</span>
-      </div>
-    </div>
 
-    <!-- Health Status Indicator & Actions -->
-    <div class="flex items-center gap-2.5">
-      <div id="systemHealthPill"
-        class="h-8 flex items-center gap-2 px-3 rounded-md bg-zinc-50 border border-zinc-200/80 transition-colors shadow-xs">
-        <span id="systemHealthDot" class="status-dot status-dot-idle"></span>
-        <span id="systemHealthText" class="text-[12px] font-medium text-zinc-600">Connecting to API...</span>
-      </div>
-      <a href="http://localhost:8000/docs" target="_blank"
-        class="h-8 px-3 rounded-md border border-zinc-200/80 bg-white hover:bg-zinc-50 text-zinc-700 hover:text-zinc-900 text-[12px] font-medium flex items-center gap-1.5 transition-colors shadow-xs"
-        title="Interactive OpenAPI Swagger Documentation">
-        <span class="material-symbols-outlined text-[16px] text-zinc-500 leading-none">menu_book</span>
-        <span>API docs</span>
-      </a>
-      <div class="h-8 w-8 rounded-md bg-zinc-900 text-white flex items-center justify-center font-digits text-[11px] font-medium shadow-xs"
-        title="Dhaka Thread Mill #04 Operator Console">
-        TD
-      </div>
-    </div>
   </header>
 
   <!-- Left Sidebar Navigation (256px) -->
-  <aside
-    class="fixed left-0 top-14 bottom-0 w-64 bg-white border-r border-zinc-200 z-40 flex flex-col justify-between">
+  <aside class="fixed left-0 top-14 bottom-0 w-64 bg-white border-r border-zinc-200 z-40 flex flex-col justify-between">
     <div class="flex flex-col py-4 px-3 overflow-y-auto">
       <div class="px-2 pb-2 text-[11px] font-medium text-zinc-400">
         Operational console
@@ -106,10 +76,10 @@
           <span class="material-symbols-outlined">psychology</span>
           <span>ML waste simulator</span>
         </a>
-        <!-- 3. MILP Reverse Logistics -->
+        <!-- 3. Reverse Logistics Optimizer -->
         <a href="optimizer.html" class="nav-item">
           <span class="material-symbols-outlined">local_shipping</span>
-          <span>Reverse logistics (MILP)</span>
+          <span>Reverse logistics optimizer</span>
         </a>
         <!-- 4. Model Governance -->
         <a href="governance.html" class="nav-item">
@@ -118,20 +88,6 @@
         </a>
       </nav>
 
-      <div class="my-4 mx-2 h-[1px] bg-zinc-100"></div>
-
-      <div class="px-2 pb-2 text-[11px] font-medium text-zinc-400">
-        Model specs
-      </div>
-      <nav class="flex flex-col gap-1 text-[12px] font-digits">
-        <div class="px-2.5 py-1.5 rounded-md text-zinc-600 flex items-center justify-between">
-          <span class="text-zinc-500 font-sans">Target count</span>
-          <span class="font-medium text-zinc-900">4 streams</span>
-        </div>
-        <div class="px-2.5 py-1.5 rounded-md text-zinc-600 flex items-center justify-between">
-          <span class="text-zinc-500 font-sans">Inference time</span>
-          <span class="font-medium text-emerald-600">&lt; 15 ms</span>
-        </div>
       </nav>
     </div>
 
@@ -139,10 +95,8 @@
     <div class="p-3.5 border-t border-zinc-200 bg-zinc-50/50">
       <div class="flex items-center justify-between font-mono text-[11px] text-zinc-600">
         <span class="flex items-center gap-2">
-          <span class="status-dot status-dot-live"></span>
-          <span class="font-sans">XGBoost ensemble</span>
         </span>
-        <span class="text-zinc-400 font-digits">R² = 0.81</span>
+        <span class="text-zinc-400 font-digits">v1.0.0</span>
       </div>
     </div>
   </aside>
@@ -172,20 +126,21 @@
         <!-- Presets -->
         <div class="flex items-center gap-2 flex-wrap">
           <span class="text-[11px] text-zinc-400 font-medium">Presets:</span>
-          <button onclick="applyPreset('cotton')"
-            class="px-2.5 py-1 rounded-md bg-white hover:bg-zinc-50 border border-zinc-200 text-zinc-700 font-medium text-[11px] transition-colors flex items-center gap-1.5 shadow-xs">
-            <span class="w-1.5 h-1.5 rounded-full bg-zinc-900"></span>
+
+          <button type="button" onclick="applyPreset('cotton')"
+            class="inline-flex items-center justify-center whitespace-nowrap rounded-md border border-zinc-200 bg-white px-2 py-0.5 text-[11px] font-medium leading-tight text-zinc-700 shadow-xs hover:bg-zinc-50 transition-colors">
             Standard cotton (15.3t)
           </button>
-          <button onclick="applyPreset('poly')"
-            class="px-2.5 py-1 rounded-md bg-white hover:bg-zinc-50 border border-zinc-200 text-zinc-700 font-medium text-[11px] transition-colors flex items-center gap-1.5 shadow-xs">
-            <span class="w-1.5 h-1.5 rounded-full bg-teal-600"></span>
+
+          <button type="button" onclick="applyPreset('poly')"
+            class="inline-flex items-center justify-center whitespace-nowrap rounded-md border border-zinc-200 bg-white px-2 py-0.5 text-[11px] font-medium leading-tight text-zinc-700 shadow-xs hover:bg-zinc-50 transition-colors">
             High-volume polyester (35t)
           </button>
-          <button onclick="applyPreset('reset')"
-            class="px-2.5 py-1 rounded-md text-zinc-500 hover:text-zinc-800 text-[11px] font-medium flex items-center gap-1 transition-colors">
-            <span class="material-symbols-outlined text-[14px]">restart_alt</span>
-            Reset defaults
+
+          <button type="button" onclick="applyPreset('reset')"
+            class="inline-flex items-center justify-center gap-1 whitespace-nowrap rounded-md px-1.5 py-0.5 text-[11px] font-medium leading-tight text-zinc-500 hover:text-zinc-800 transition-colors">
+            <span class="material-symbols-outlined text-[14px] leading-none">restart_alt</span>
+            <span>Reset defaults</span>
           </button>
         </div>
       </div>
@@ -194,7 +149,8 @@
       <div class="grid grid-cols-1 xl:grid-cols-12 gap-6 mt-6 items-start">
 
         <!-- LEFT PANEL: 28 Factory Inputs Form (7 cols) -->
-        <form id="predictionForm" onsubmit="event.preventDefault(); runPrediction();" class="xl:col-span-7 flex flex-col gap-4">
+        <form id="predictionForm" onsubmit="event.preventDefault(); runPrediction();"
+          class="xl:col-span-7 flex flex-col gap-4">
 
           <!-- Section A: Production & Scheduling -->
           <div class="industrial-card p-5">
@@ -221,7 +177,8 @@
                 <div class="relative">
                   <input id="inProdKg" type="number" step="100" value="15300" oninput="updateTonCalc()"
                     class="w-full h-8 px-2.5 pr-8 rounded-md border border-zinc-200 bg-white font-digits text-[12px] focus:outline-none focus:border-zinc-400">
-                  <span class="absolute right-2.5 top-2 text-[11px] text-zinc-400 font-digits pointer-events-none">kg</span>
+                  <span
+                    class="absolute right-2.5 top-2 text-[11px] text-zinc-400 font-digits pointer-events-none">kg</span>
                 </div>
               </div>
 
@@ -283,7 +240,8 @@
                 <div class="relative">
                   <input id="inEnergyKwh" type="number" step="500" value="25000" oninput="updateUtilityCalculations()"
                     class="w-full h-8 px-2.5 pr-12 rounded-md border border-zinc-200 bg-white font-digits text-[12px] focus:outline-none focus:border-zinc-400">
-                  <span class="absolute right-2.5 top-2 text-[11px] text-zinc-400 font-digits pointer-events-none">kWh</span>
+                  <span
+                    class="absolute right-2.5 top-2 text-[11px] text-zinc-400 font-digits pointer-events-none">kWh</span>
                 </div>
               </div>
 
@@ -295,7 +253,8 @@
                 <div class="relative">
                   <input id="inWaterL" type="number" step="5000" value="750000" oninput="updateUtilityCalculations()"
                     class="w-full h-8 px-2.5 pr-12 rounded-md border border-zinc-200 bg-white font-digits text-[12px] focus:outline-none focus:border-zinc-400">
-                  <span class="absolute right-2.5 top-2 text-[11px] text-zinc-400 font-digits pointer-events-none">litres</span>
+                  <span
+                    class="absolute right-2.5 top-2 text-[11px] text-zinc-400 font-digits pointer-events-none">litres</span>
                 </div>
               </div>
             </div>
@@ -402,13 +361,13 @@
           <div class="industrial-card p-4 flex flex-wrap items-center justify-between gap-3">
             <div class="flex items-center gap-2 text-zinc-500 text-[11px]">
               <span class="status-dot status-dot-live"></span>
-              <span>FastAPI ready: <span class="font-digits">POST /predict</span></span>
+              <span>XGBoost ensemble · <span class="font-digits">local inference</span></span>
             </div>
 
             <div class="flex items-center gap-2">
               <button id="predictAndOptBtn" type="button" onclick="runPredictAndOptimize()" class="btn-secondary">
                 <span class="material-symbols-outlined text-[16px] text-zinc-500">alt_route</span>
-                <span>Predict & run MILP</span>
+                <span>Predict & optimize</span>
               </button>
               <button id="runPredictBtn" type="submit" class="btn-primary">
                 <span class="material-symbols-outlined text-[16px]">play_arrow</span>
@@ -508,14 +467,20 @@
                 <span id="resTotalWasteKg" class="font-digits font-medium text-zinc-900">5,590.55 kg total</span>
               </div>
               <div class="w-full h-2 rounded bg-zinc-100 overflow-hidden flex">
-                <div id="barSolid" class="h-full bg-blue-600 transition-all duration-300" style="width: 30%;" title="Solid: 30%"></div>
-                <div id="barYarn" class="h-full bg-teal-500 transition-all duration-300" style="width: 13%;" title="Yarn: 13%"></div>
-                <div id="barChemical" class="h-full bg-red-500 transition-all duration-300" style="width: 57%;" title="Chemical: 57%"></div>
+                <div id="barSolid" class="h-full bg-blue-600 transition-all duration-300" style="width: 30%;"
+                  title="Solid: 30%"></div>
+                <div id="barYarn" class="h-full bg-teal-500 transition-all duration-300" style="width: 13%;"
+                  title="Yarn: 13%"></div>
+                <div id="barChemical" class="h-full bg-red-500 transition-all duration-300" style="width: 57%;"
+                  title="Chemical: 57%"></div>
               </div>
               <div class="flex justify-between font-digits text-[10px] text-zinc-500 mt-1.5">
-                <span class="flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-blue-600"></span> Solid (30%)</span>
-                <span class="flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-teal-500"></span> Yarn (13%)</span>
-                <span class="flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-red-500"></span> Sludge (57%)</span>
+                <span class="flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-blue-600"></span> Solid
+                  (30%)</span>
+                <span class="flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-teal-500"></span> Yarn
+                  (13%)</span>
+                <span class="flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-red-500"></span> Sludge
+                  (57%)</span>
               </div>
             </div>
 

@@ -4,7 +4,7 @@
 <head>
   <meta charset="utf-8">
   <meta content="width=device-width, initial-scale=1.0" name="viewport">
-  <title>MILP Reverse Logistics Optimizer | Textile Dyeing Intelligence</title>
+  <title>Reverse Logistics Optimizer | Textile Dyeing Intelligence</title>
 
   <!-- Typography: Google Sans (UI) & Roboto Mono (Digits/Telemetry) -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -53,44 +53,11 @@
         <span class="material-symbols-outlined text-zinc-700 text-[20px]">water_drop</span>
         <span class="font-medium text-[15px] tracking-tight text-zinc-900">Textile Intelligence</span>
       </div>
-      <span class="keycap">BD-04</span>
-      <span class="text-zinc-500 text-[12px] font-normal">Dhaka Mill 04</span>
-    </div>
-
-    <!-- Search Input -->
-    <div class="flex-1 max-w-lg mx-6">
-      <div class="relative flex items-center">
-        <span class="material-symbols-outlined absolute left-3 text-zinc-400 text-[18px]">search</span>
-        <input
-          class="w-full h-8 pl-9 pr-8 rounded-md bg-zinc-50 text-zinc-900 text-[12px] placeholder:text-zinc-400 focus:outline-none focus:bg-white focus:ring-1 focus:ring-accent border border-zinc-200 transition-colors"
-          placeholder="Search collection nodes, tariffs, or constraints..." type="text">
-        <span class="keycap absolute right-2">/</span>
-      </div>
-    </div>
-
-    <!-- Health Status Indicator & Actions -->
-    <div class="flex items-center gap-2.5">
-      <div id="systemHealthPill"
-        class="h-8 flex items-center gap-2 px-3 rounded-md bg-zinc-50 border border-zinc-200/80 transition-colors shadow-xs">
-        <span id="systemHealthDot" class="status-dot status-dot-idle"></span>
-        <span id="systemHealthText" class="text-[12px] font-medium text-zinc-600">Connecting to API...</span>
-      </div>
-      <a href="http://localhost:8000/docs" target="_blank"
-        class="h-8 px-3 rounded-md border border-zinc-200/80 bg-white hover:bg-zinc-50 text-zinc-700 hover:text-zinc-900 text-[12px] font-medium flex items-center gap-1.5 transition-colors shadow-xs"
-        title="Interactive OpenAPI Swagger Documentation">
-        <span class="material-symbols-outlined text-[16px] text-zinc-500 leading-none">menu_book</span>
-        <span>API docs</span>
-      </a>
-      <div class="h-8 w-8 rounded-md bg-zinc-900 text-white flex items-center justify-center font-digits text-[11px] font-medium shadow-xs"
-        title="Dhaka Thread Mill #04 Operator Console">
-        TD
-      </div>
-    </div>
+      <span class="text-zinc-500 text-[12px] font-normal">Dhaka Textile Factory</span>
   </header>
 
   <!-- Left Sidebar Navigation (256px) -->
-  <aside
-    class="fixed left-0 top-14 bottom-0 w-64 bg-white border-r border-zinc-200 z-40 flex flex-col justify-between">
+  <aside class="fixed left-0 top-14 bottom-0 w-64 bg-white border-r border-zinc-200 z-40 flex flex-col justify-between">
     <div class="flex flex-col py-4 px-3 overflow-y-auto">
       <div class="px-2 pb-2 text-[11px] font-medium text-zinc-400">
         Operational console
@@ -106,10 +73,10 @@
           <span class="material-symbols-outlined">psychology</span>
           <span>ML waste simulator</span>
         </a>
-        <!-- 3. MILP Reverse Logistics (ACTIVE) -->
+        <!-- 3. Reverse Logistics Optimizer (ACTIVE) -->
         <a href="optimizer.html" class="nav-item active">
           <span class="material-symbols-outlined">local_shipping</span>
-          <span>Reverse logistics (MILP)</span>
+          <span>Reverse logistics optimizer</span>
         </a>
         <!-- 4. Model Governance -->
         <a href="governance.html" class="nav-item">
@@ -119,30 +86,14 @@
       </nav>
 
       <div class="my-4 mx-2 h-[1px] bg-zinc-100"></div>
-
-      <div class="px-2 pb-2 text-[11px] font-medium text-zinc-400">
-        MILP parameters
-      </div>
-      <nav class="flex flex-col gap-1 text-[12px] font-digits">
-        <div class="px-2.5 py-1.5 rounded-md text-zinc-600 flex items-center justify-between">
-          <span class="text-zinc-500 font-sans">Candidate CCs</span>
-          <span class="font-medium text-zinc-900">3 hubs</span>
-        </div>
-        <div class="px-2.5 py-1.5 rounded-md text-zinc-600 flex items-center justify-between">
-          <span class="text-zinc-500 font-sans">Optimality gap</span>
-          <span class="font-medium text-emerald-600">0.0% (exact)</span>
-        </div>
-      </nav>
     </div>
 
     <!-- Status Footer -->
     <div class="p-3.5 border-t border-zinc-200 bg-zinc-50/50">
       <div class="flex items-center justify-between font-mono text-[11px] text-zinc-600">
         <span class="flex items-center gap-2">
-          <span class="status-dot status-dot-live"></span>
-          <span class="font-sans">MILP solver online</span>
         </span>
-        <span class="text-zinc-400 font-digits">SciPy / DOcplex</span>
+        <span class="text-zinc-400 font-digits">v1.0.0</span>
       </div>
     </div>
   </aside>
@@ -163,21 +114,23 @@
           </div>
           <div class="flex items-center gap-3">
             <h1 class="text-[20px] font-medium text-zinc-900 tracking-tight">
-              MILP reverse logistics and routing optimizer
+              Reverse logistics and routing optimizer
             </h1>
-            <span class="keycap">Cluster 1: Dhaka North / Narayanganj / Gazipur</span>
           </div>
         </div>
 
         <!-- Action Controls -->
         <div class="flex items-center gap-2">
-          <button onclick="toggleConfigDrawer()" class="btn-secondary">
-            <span class="material-symbols-outlined text-[16px] text-zinc-500">tune</span>
+          <button onclick="toggleConfigDrawer()"
+            class="flex items-center gap-2 whitespace-nowrap rounded-lg border border-zinc-300 bg-white px-3.5 py-2 text-sm font-medium text-zinc-700 shadow-sm hover:bg-zinc-50">
+            <span class="material-symbols-outlined text-[18px] text-zinc-500">tune</span>
             <span>Configure parameters</span>
           </button>
-          <button id="executeMilpBtn" onclick="runOptimization()" class="btn-primary">
-            <span class="material-symbols-outlined text-[16px]">play_arrow</span>
-            <span>Execute MILP optimizer</span>
+
+          <button id="executeMilpBtn" onclick="runOptimization()"
+            class="flex items-center gap-2 whitespace-nowrap rounded-lg bg-blue-600 px-3.5 py-2 text-sm font-medium text-white shadow-sm hover:bg-blue-700">
+            <span class="material-symbols-outlined text-[18px]">play_arrow</span>
+            <span>Run logistics optimizer</span>
           </button>
         </div>
       </div>
@@ -199,7 +152,8 @@
               <span class="w-1.5 h-1.5 rounded-full bg-teal-600"></span>
               Transit tariff
             </div>
-            <div class="font-digits text-[13px] font-medium text-zinc-900 mt-0.5">0.04 - 0.08 <span class="text-[10px] text-zinc-400 font-sans">BDT/kg·km</span></div>
+            <div class="font-digits text-[13px] font-medium text-zinc-900 mt-0.5">0.04 - 0.08 <span
+                class="text-[10px] text-zinc-400 font-sans">BDT/kg·km</span></div>
             <div class="text-[10px] text-zinc-500 font-sans">Distance tiered</div>
           </div>
 
@@ -208,7 +162,8 @@
               <span class="w-1.5 h-1.5 rounded-full bg-rose-600"></span>
               CO2 penalty
             </div>
-            <div class="font-digits text-[13px] font-medium text-zinc-900 mt-0.5">1.50 <span class="text-[10px] text-zinc-400 font-sans">BDT/kg CO2e</span></div>
+            <div class="font-digits text-[13px] font-medium text-zinc-900 mt-0.5">1.50 <span
+                class="text-[10px] text-zinc-400 font-sans">BDT/kg CO2e</span></div>
             <div class="text-[10px] text-zinc-500 font-sans">ESG Scope 3 standard</div>
           </div>
 
@@ -217,17 +172,18 @@
               <span class="w-1.5 h-1.5 rounded-full bg-emerald-600"></span>
               Circularity credit
             </div>
-            <div class="font-digits text-[13px] font-medium text-emerald-600 mt-0.5">+2.00 <span class="text-[10px] text-zinc-400 font-sans">BDT/kg yield</span></div>
+            <div class="font-digits text-[13px] font-medium text-emerald-600 mt-0.5">+2.00 <span
+                class="text-[10px] text-zinc-400 font-sans">BDT/kg yield</span></div>
             <div class="text-[10px] text-zinc-500 font-sans">Circular recovery bounty</div>
           </div>
 
           <div>
             <div class="text-[10px] text-zinc-400 font-sans flex items-center gap-1.5">
               <span class="w-1.5 h-1.5 rounded-full bg-blue-600"></span>
-              Solver algorithm
+              Optimization engine
             </div>
-            <div class="font-digits text-[13px] font-medium text-zinc-900 mt-0.5">DOcplex / SciPy</div>
-            <div class="text-[10px] text-zinc-500 font-sans">Branch & bound (MILP)</div>
+            <div class="font-digits text-[13px] font-medium text-zinc-900 mt-0.5">Network Flow Optimizer</div>
+            <div class="text-[10px] text-zinc-500 font-sans">Cost & Emission Min.</div>
           </div>
 
           <div>
@@ -235,7 +191,8 @@
               <span class="w-1.5 h-1.5 rounded-full bg-emerald-600"></span>
               Convergence time
             </div>
-            <div class="font-digits text-[13px] font-medium text-emerald-600 mt-0.5">38 ms <span class="text-[10px] text-zinc-400 font-sans">gap 0%</span></div>
+            <div class="font-digits text-[13px] font-medium text-emerald-600 mt-0.5">38 ms <span
+                class="text-[10px] text-zinc-400 font-sans">gap 0%</span></div>
             <div class="text-[10px] text-zinc-500 font-sans">Global optimum found</div>
           </div>
         </div>
@@ -451,7 +408,7 @@
             </h2>
             <p class="text-[11px] text-zinc-500 mt-0.5">Multi-commodity allocation across collection centers.</p>
           </div>
-          <span class="keycap">POST /optimize</span>
+          <span class="keycap">MILP routing engine</span>
         </div>
 
         <div class="overflow-x-auto w-full">
@@ -488,7 +445,8 @@
           </table>
         </div>
         <div class="p-3 bg-zinc-50 border-t border-zinc-200 text-[10px] text-zinc-400 flex justify-between">
-          <span>*Direct commodity margin before fixed contract activation fees and on-site ETP water recycling credits.</span>
+          <span>*Direct commodity margin before fixed contract activation fees and on-site ETP water recycling
+            credits.</span>
           <span class="text-zinc-600 font-digits font-medium">Dual simplex iterations: 1,429 · Global optimum</span>
         </div>
       </div>
@@ -506,7 +464,8 @@
               </h3>
               <span class="keycap">Itemized</span>
             </div>
-            <p class="text-[12px] text-zinc-500 my-2">Itemized revenues, circularity incentives, transport freight, and carbon charges.</p>
+            <p class="text-[12px] text-zinc-500 my-2">Itemized revenues, circularity incentives, transport freight, and
+              carbon charges.</p>
 
             <div class="space-y-1.5 font-digits text-[12px] mt-3">
               <div class="flex justify-between p-2 rounded-md bg-emerald-50 text-emerald-900">
@@ -553,7 +512,8 @@
 
           <div class="mt-4 pt-3 border-t border-zinc-200 flex justify-between items-center">
             <span class="font-medium text-[12px] text-zinc-700 font-sans">Net economic objective (Z)</span>
-            <span id="wfTotalZ" class="font-telemetry-display text-[22px] font-medium text-emerald-600">+4,832.15 BDT</span>
+            <span id="wfTotalZ" class="font-telemetry-display text-[22px] font-medium text-emerald-600">+4,832.15
+              BDT</span>
           </div>
         </div>
 
@@ -568,18 +528,21 @@
               <span class="keycap">Clarifiers</span>
             </div>
 
-            <p class="text-[12px] text-zinc-500 my-2">Wastewater treated on-site at factory ETP, reducing freshwater purchases and avoiding disposal fees.</p>
+            <p class="text-[12px] text-zinc-500 my-2">Wastewater treated on-site at factory ETP, reducing freshwater
+              purchases and avoiding disposal fees.</p>
 
             <div class="grid grid-cols-2 gap-3 mt-4">
               <div class="p-3 rounded-md bg-zinc-50 border border-zinc-200">
                 <span class="text-[10px] text-zinc-500 font-sans">Recycled water (75%)</span>
-                <div id="etpRecycledLitres" class="font-telemetry-display text-[20px] font-medium text-zinc-900 mt-1">338,690 L</div>
+                <div id="etpRecycledLitres" class="font-telemetry-display text-[20px] font-medium text-zinc-900 mt-1">
+                  338,690 L</div>
                 <span class="text-[10px] text-zinc-400 font-sans">Re-injected to cycle</span>
               </div>
 
               <div class="p-3 rounded-md bg-zinc-50 border border-zinc-200">
                 <span class="text-[10px] text-zinc-500 font-sans">Permitted drain (25%)</span>
-                <div id="etpDrainedLitres" class="font-telemetry-display text-[20px] font-medium text-zinc-900 mt-1">112,897 L</div>
+                <div id="etpDrainedLitres" class="font-telemetry-display text-[20px] font-medium text-zinc-900 mt-1">
+                  112,897 L</div>
                 <span class="text-[10px] text-zinc-400 font-sans">Discharged effluent</span>
               </div>
             </div>
@@ -625,7 +588,7 @@
           if (parsed.yarn_kg) document.getElementById('inYarnKg').value = parsed.yarn_kg;
           if (parsed.chemical_kg) document.getElementById('inChemKg').value = parsed.chemical_kg;
           if (parsed.wastewater_L) document.getElementById('inWaterL').value = parsed.wastewater_L;
-        } catch (_) {}
+        } catch (_) { }
       }
       runOptimization();
     });
@@ -633,7 +596,7 @@
     async function runOptimization() {
       const btn = document.getElementById('executeMilpBtn');
       btn.disabled = true;
-      btn.innerHTML = `<span class="material-symbols-outlined text-[16px] animate-spin">refresh</span> Solving MILP...`;
+      btn.innerHTML = `<span class="material-symbols-outlined text-[16px] animate-spin">refresh</span> Optimizing routes...`;
 
       const solidKg = parseFloat(document.getElementById('inSolidKg').value);
       const yarnKg = parseFloat(document.getElementById('inYarnKg').value);
@@ -715,7 +678,7 @@
         renderOptimizerResults(baseline);
       } finally {
         btn.disabled = false;
-        btn.innerHTML = `<span class="material-symbols-outlined text-[16px]">play_arrow</span> Execute MILP optimizer`;
+        btn.innerHTML = `<span class="material-symbols-outlined text-[16px]">play_arrow</span> Run logistics optimizer`;
       }
     }
 
