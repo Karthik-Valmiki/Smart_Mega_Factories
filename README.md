@@ -1,4 +1,4 @@
-# Predictive Multi-Stream Waste Forecasting and MILP Reverse Logistics Optimization for Circular Textile Dyeing Operations
+# Predictive Multi-Stream Waste Forecasting Textile Dyeing Operations
 
 ## Abstract
 
