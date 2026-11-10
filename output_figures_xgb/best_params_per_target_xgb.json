@@ -1,0 +1,38 @@
+{
+  "Solid_Waste_kg": {
+    "colsample_bytree": 0.9,
+    "learning_rate": 0.03,
+    "max_depth": 2,
+    "min_child_weight": 3,
+    "n_estimators": 700,
+    "reg_lambda": 5.0,
+    "subsample": 0.8
+  },
+  "Yarn_Waste_kg": {
+    "colsample_bytree": 0.7,
+    "learning_rate": 0.05,
+    "max_depth": 4,
+    "min_child_weight": 5,
+    "n_estimators": 700,
+    "reg_lambda": 1.0,
+    "subsample": 0.8
+  },
+  "Chemical_Waste_kg": {
+    "colsample_bytree": 0.9,
+    "learning_rate": 0.05,
+    "max_depth": 3,
+    "min_child_weight": 10,
+    "n_estimators": 700,
+    "reg_lambda": 1.0,
+    "subsample": 0.8
+  },
+  "Wastewater_L": {
+    "colsample_bytree": 0.7,
+    "learning_rate": 0.05,
+    "max_depth": 4,
+    "min_child_weight": 3,
+    "n_estimators": 700,
+    "reg_lambda": 1.0,
+    "subsample": 1.0
+  }
+}
